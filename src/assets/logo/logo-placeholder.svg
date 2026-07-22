@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 80" role="img" aria-label="Saviare">
+  <rect width="260" height="80" fill="#F7F6F2"/>
+  <g fill="none" stroke="#4F7A5A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M28 56C48 50 60 36 64 18 43 24 31 38 28 56Z"/>
+    <path d="M28 56c8-13 20-25 33-35"/>
+  </g>
+  <text x="82" y="50" fill="#333333" font-family="Poppins, Arial, sans-serif" font-size="32" font-weight="700">Saviare</text>
+</svg>

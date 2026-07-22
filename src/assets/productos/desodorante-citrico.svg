@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Desodorante natural cítrico">
+  <rect width="800" height="600" fill="#F7F6F2"/>
+  <rect x="300" y="156" width="206" height="322" rx="64" fill="#FFFFFF"/>
+  <rect x="326" y="210" width="154" height="114" rx="20" fill="#D8CBB8"/>
+  <rect x="340" y="108" width="126" height="76" rx="24" fill="#7FA36B"/>
+  <circle cx="588" cy="362" r="56" fill="#E4CF91"/>
+  <path d="M588 306v112M532 362h112" stroke="#F7F6F2" stroke-width="8"/>
+</svg>

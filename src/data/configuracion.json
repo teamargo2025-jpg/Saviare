@@ -1,0 +1,19 @@
+{
+  "empresa": "Saviare",
+  "logo": "logo-saviare.png",
+  "logoIcono": "logo-icono-saviare.png",
+  "eslogan": "Bienestar natural para una vida consciente",
+  "telefono": "+51 900 000 000",
+  "correo": "hola@saviare.com",
+  "instagram": "https://instagram.com/saviare",
+  "facebook": "https://facebook.com/saviare",
+  "tiktok": "https://tiktok.com/@saviare",
+  "direccion": "Atención 100% online",
+  "horario": "Lunes a sábado, 9:00 a. m. - 7:00 p. m.",
+  "whatsapp": "51900000000",
+  "historia": "Texto editable para presentar el origen de Saviare y su conexión con el bienestar natural.",
+  "mision": "Acercar productos orgánicos, biodegradables y de cuidado personal a personas que eligen vivir con mayor conciencia.",
+  "vision": "Ser una marca referente en bienestar sostenible, confianza y calidad dentro del comercio digital.",
+  "valores": ["Calidad", "Transparencia", "Sostenibilidad", "Cuidado", "Elegancia"],
+  "compromisoAmbiental": "Seleccionamos productos que priorizan ingredientes responsables, empaques conscientes y hábitos de consumo más amables con el entorno."
+}

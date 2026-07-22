@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Jabón botánico de caléndula">
+  <rect width="800" height="600" fill="#F7F6F2"/>
+  <circle cx="610" cy="155" r="130" fill="#D8CBB8" opacity=".45"/>
+  <rect x="180" y="300" width="360" height="128" rx="48" fill="#FFF8EA"/>
+  <rect x="240" y="248" width="360" height="128" rx="48" fill="#FFFFFF"/>
+  <path d="M520 320c80-76 136-82 186-38-54 16-98 48-132 96" fill="none" stroke="#4F7A5A" stroke-width="12" stroke-linecap="round"/>
+  <path d="M648 266c-54 8-86 42-96 96 53-4 87-39 96-96Z" fill="#7FA36B"/>
+</svg>

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "jabones",
+    "nombre": "Jabones",
+    "descripcion": "Fórmulas suaves con ingredientes de origen natural."
+  },
+  {
+    "id": "cuidado-personal",
+    "nombre": "Cuidado personal",
+    "descripcion": "Rutinas conscientes para piel, cuerpo y bienestar diario."
+  },
+  {
+    "id": "biodegradables",
+    "nombre": "Biodegradables",
+    "descripcion": "Alternativas prácticas para reducir residuos en casa."
+  },
+  {
+    "id": "organicos",
+    "nombre": "Orgánicos",
+    "descripcion": "Productos seleccionados con enfoque natural y responsable."
+  }
+]
