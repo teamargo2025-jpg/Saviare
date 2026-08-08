@@ -1,9 +1,3 @@
-const productImages = import.meta.glob('../assets/productos/*', {
-  eager: true,
-  query: '?url',
-  import: 'default'
-});
-
 const bannerImages = {
   'hero-saviare.svg': new URL('../assets/banner/hero-saviare.svg', import.meta.url).href
 };
@@ -14,11 +8,16 @@ const logoImages = {
   'logo-placeholder.svg': new URL('../assets/logo/logo-placeholder.svg', import.meta.url).href
 };
 
+const socialImages = {
+  'qr-instagram.jpg': new URL('../assets/social/qr-instagram.jpg', import.meta.url).href,
+  'qr-tiktok.jpg': new URL('../assets/social/qr-tiktok.jpg', import.meta.url).href
+};
+
 const imageByName = (collection, folder, fileName) => {
   const match = collection[`../assets/${folder}/${fileName}`] || collection[fileName];
   return match || '';
 };
 
-export const getProductImage = (fileName) => imageByName(productImages, 'productos', fileName);
 export const getBannerImage = (fileName) => imageByName(bannerImages, 'banner', fileName);
 export const getLogoImage = (fileName) => imageByName(logoImages, 'logo', fileName);
+export const getSocialImage = (fileName) => imageByName(socialImages, 'social', fileName);

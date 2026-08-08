@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Bolsas compostables multiuso">
-  <rect width="800" height="600" fill="#F2F0E8"/>
-  <path d="M260 190h280l52 286H208l52-286Z" fill="#FFFFFF"/>
-  <path d="M318 212c8-70 156-70 164 0" fill="none" stroke="#4F7A5A" stroke-width="14" stroke-linecap="round"/>
-  <path d="M340 360c70-92 138-112 202-62-74 14-126 48-156 102" fill="none" stroke="#7FA36B" stroke-width="12" stroke-linecap="round"/>
-  <path d="M504 286c-58 9-94 43-108 100 58-5 96-39 108-100Z" fill="#4F7A5A"/>
-</svg>

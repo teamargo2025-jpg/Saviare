@@ -1,5 +1,5 @@
 import { formatPrice } from './data.js';
-import { getLogoImage, getProductImage } from './assets.js';
+import { getLogoImage } from './assets.js';
 
 const navItems = [
   { label: 'Inicio', href: 'index.html', page: 'home' },
@@ -18,7 +18,15 @@ export const icon = (name) => {
     message: '<path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 20.5l1.7-5.4A8.4 8.4 0 1 1 21 11.5Z"/>',
     mail: '<path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/>',
     heart: '<path d="M20.8 8.4c0 5.2-8.8 10.6-8.8 10.6S3.2 13.6 3.2 8.4A4.6 4.6 0 0 1 12 6.5a4.6 4.6 0 0 1 8.8 1.9Z"/>',
-    spark: '<path d="M12 2 9.7 8.8 3 11l6.7 2.2L12 20l2.3-6.8L21 11l-6.7-2.2Z"/>'
+    spark: '<path d="M12 2 9.7 8.8 3 11l6.7 2.2L12 20l2.3-6.8L21 11l-6.7-2.2Z"/>',
+    instagram: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" stroke="none"/>',
+    facebook: '<path d="M14 21v-8h2.8l.4-3.2H14V7.7c0-.93.26-1.56 1.6-1.56H17.3V3.28C17 3.24 16 3.15 14.83 3.15c-2.42 0-4.08 1.48-4.08 4.2V9.8H8v3.2h2.75V21Z"/>',
+    tiktok: '<path d="M15 3c.4 2.2 1.8 3.6 4 3.9v2.9c-1.4 0-2.8-.4-4-1.2v6.5a5.6 5.6 0 1 1-5.6-5.6c.3 0 .6 0 .9.1v2.9a2.7 2.7 0 1 0 1.9 2.6V3Z"/>',
+    star: '<path d="M12 3.5 14.5 9l6 .8-4.4 4.1 1.1 6-5.2-2.9-5.2 2.9 1.1-6-4.4-4.1 6-.8Z"/>',
+    cart: '<path d="M4 4h2l1.6 10.6a2 2 0 0 0 2 1.7h7.6a2 2 0 0 0 2-1.6L20.5 8H7"/><circle cx="9.5" cy="20" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="20" r="1.3" fill="currentColor" stroke="none"/>',
+    close: '<path d="M6 6l12 12M18 6 6 18"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    minus: '<path d="M5 12h14"/>'
   };
 
   return `<svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths[name] || paths.leaf}</svg>`;
@@ -29,10 +37,15 @@ export const navbar = (config, activePage) => `
     <a class="brand" href="index.html" aria-label="${config.empresa}">
       ${brandVisual(config)}
     </a>
-    <button class="nav-toggle" type="button" data-nav-toggle aria-label="Abrir menú">${icon('menu')}</button>
-    <nav class="site-nav" data-site-nav aria-label="Navegación principal">
-      ${navItems.map((item) => `<a href="${item.href}" class="${activePage === item.page ? 'active' : ''}">${item.label}</a>`).join('')}
-    </nav>
+    <div class="header-actions">
+      <nav class="site-nav" data-site-nav aria-label="Navegación principal">
+        ${navItems.map((item) => `<a href="${item.href}" class="${activePage === item.page ? 'active' : ''}">${item.label}</a>`).join('')}
+      </nav>
+      <button class="cart-toggle" type="button" data-cart-toggle aria-label="Ver carrito">
+        ${icon('cart')}<span class="cart-count" data-cart-count hidden>0</span>
+      </button>
+      <button class="nav-toggle" type="button" data-nav-toggle aria-label="Abrir menú">${icon('menu')}</button>
+    </div>
   </header>
 `;
 
@@ -64,24 +77,64 @@ const brandVisual = (config) => config.logo
 export const productCard = (product) => `
   <article class="product-card">
     <a class="product-media" href="producto.html?producto=${product.slug}" aria-label="Ver ${product.nombre}">
-      <img src="${getProductImage(product.imagenPrincipal)}" alt="${product.nombre}" loading="lazy" />
+      <img src="${product.imagenPrincipal}" alt="${product.nombre}" loading="lazy" />
     </a>
     <div class="product-card-body">
-      <span class="pill">${product.categoria}</span>
+      <div class="product-card-tags">
+        <span class="pill">${product.categoria}</span>
+        ${product.disponible === false ? '<span class="pill pill-muted">Agotado</span>' : ''}
+      </div>
       <h3>${product.nombre}</h3>
       <p>${product.descripcion}</p>
       <div class="product-card-actions">
         <strong>${formatPrice(product.precio)}</strong>
         <a class="text-link" href="producto.html?producto=${product.slug}">Ver producto ${icon('arrow')}</a>
       </div>
+      ${addToCartButton(product)}
     </div>
   </article>
+`;
+
+export const addToCartButton = (product, { label = 'Agregar al carrito', className = 'btn-ghost btn-block' } = {}) =>
+  product.disponible === false
+    ? `<span class="btn ${className}" aria-disabled="true">Agotado</span>`
+    : `<button
+        class="btn ${className}"
+        type="button"
+        data-add-cart="${product.id}"
+        data-cart-nombre="${product.nombre}"
+        data-cart-precio="${product.precio}"
+        data-cart-imagen="${product.imagenPrincipal}"
+        data-cart-slug="${product.slug}"
+      >${icon('cart')} ${label}</button>`;
+
+export const starRating = (value) => `
+  <span class="star-rating" aria-label="${value} de 5 estrellas">
+    ${[1, 2, 3, 4, 5].map((i) => `<span class="${i <= value ? 'star filled' : 'star'}">${icon('star')}</span>`).join('')}
+  </span>
 `;
 
 export const pageShell = (config, activePage, content) => `
   ${navbar(config, activePage)}
   <main>${content}</main>
   ${footer(config)}
+  ${cartDrawer()}
+`;
+
+const cartDrawer = () => `
+  <div class="cart-backdrop" data-cart-backdrop></div>
+  <aside class="cart-drawer" data-cart-drawer aria-label="Carrito de pedido">
+    <div class="cart-drawer-header">
+      <h2>Tu pedido</h2>
+      <button class="cart-close" type="button" data-cart-close aria-label="Cerrar carrito">${icon('close')}</button>
+    </div>
+    <div class="cart-items" data-cart-items></div>
+    <div class="cart-summary">
+      <div class="cart-total-row"><span>Total</span><strong data-cart-total></strong></div>
+      <button class="btn btn-ghost" type="button" data-cart-clear>Vaciar carrito</button>
+      <a class="btn btn-primary" data-cart-whatsapp href="#" target="_blank" rel="noreferrer">${icon('message')} Pedir por WhatsApp</a>
+    </div>
+  </aside>
 `;
 
 export const sectionHeading = (eyebrow, title, copy = '') => `

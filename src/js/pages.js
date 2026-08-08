@@ -1,12 +1,21 @@
-import { getBannerImage, getLogoImage, getProductImage } from './assets.js';
-import { formatPrice, getCategories, getFeaturedProducts, getProductBySlug, getProducts } from './data.js';
-import { icon, pageShell, productCard, sectionHeading, setupNavigation, whatsappLink } from './components.js';
+import { getBannerImage, getLogoImage, getSocialImage } from './assets.js';
+import {
+  formatPrice,
+  getApprovedReviews,
+  getCategories,
+  getFeaturedProducts,
+  getProductBySlug,
+  getProducts,
+  submitReview
+} from './data.js';
+import { addToCartButton, icon, pageShell, productCard, sectionHeading, setupNavigation, starRating, whatsappLink } from './components.js';
+import { escapeHtml } from '../utils/sanitize.js';
+import { setupCart } from './cart-ui.js';
 
 const app = () => document.querySelector('#app');
 
-export const renderHome = (config) => {
-  const categories = getCategories();
-  const featured = getFeaturedProducts();
+export const renderHome = async (config) => {
+  const [categories, featured] = await Promise.all([getCategories(), getFeaturedProducts()]);
 
   app().innerHTML = pageShell(config, 'home', `
     <section class="hero">
@@ -61,12 +70,13 @@ export const renderHome = (config) => {
     </section>
   `);
   setupNavigation();
+  setupCart(config);
 };
 
-export const renderCatalog = (config) => {
+export const renderCatalog = async (config) => {
   const params = new URLSearchParams(window.location.search);
   const initialCategory = params.get('categoria') || 'Todas';
-  const products = getProducts();
+  const products = await getProducts();
   const categories = ['Todas', ...new Set(products.map((product) => product.categoria))];
 
   app().innerHTML = pageShell(config, 'catalogo', `
@@ -126,28 +136,53 @@ export const renderCatalog = (config) => {
   [search, category, sort].forEach((control) => control.addEventListener('input', render));
   render();
   setupNavigation();
+  setupCart(config);
 };
 
-export const renderProduct = (config) => {
+export const renderProduct = async (config) => {
   const params = new URLSearchParams(window.location.search);
-  const product = getProductBySlug(params.get('producto')) || getProducts()[0];
-  const related = getProducts().filter((item) => item.categoria === product.categoria && item.id !== product.id).slice(0, 3);
+  const slug = params.get('producto');
+  const products = await getProducts();
+  const product = (slug ? await getProductBySlug(slug) : null) || products[0];
+
+  if (!product) {
+    app().innerHTML = pageShell(config, 'catalogo', '<section class="section"><p class="empty-state">Producto no encontrado.</p></section>');
+    setupNavigation();
+    setupCart(config);
+    return;
+  }
+
+  const related = products.filter((item) => item.categoria === product.categoria && item.id !== product.id).slice(0, 3);
+  const reviews = await getApprovedReviews(product.id);
   document.title = `${product.nombre} | ${config.empresa}`;
 
   app().innerHTML = pageShell(config, 'catalogo', `
     <section class="product-detail">
       <div class="gallery">
-        <img class="gallery-main" src="${getProductImage(product.imagenPrincipal)}" alt="${product.nombre}" />
+        <img class="gallery-main" src="${product.imagenPrincipal}" alt="${product.nombre}" />
         <div class="gallery-thumbs">
-          ${product.imagenes.map((image) => `<img src="${getProductImage(image)}" alt="${product.nombre}" loading="lazy" />`).join('')}
+          ${product.imagenes.map((image) => `<img src="${image}" alt="${product.nombre}" loading="lazy" />`).join('')}
         </div>
       </div>
       <article class="product-info">
-        <span class="pill">${product.categoria}</span>
+        <div class="product-card-tags">
+          <span class="pill">${product.categoria}</span>
+          ${product.disponible === false ? '<span class="pill pill-muted">Agotado</span>' : ''}
+        </div>
         <h1>${product.nombre}</h1>
         <strong class="price">${formatPrice(product.precio)}</strong>
         <p>${product.descripcion}</p>
-        <a class="btn btn-primary" href="${whatsappLink(config, product.nombre)}" target="_blank" rel="noreferrer">${icon('message')} Consultar por WhatsApp</a>
+        <div class="product-order-actions">
+          ${product.disponible === false ? '' : `
+            <div class="qty-stepper" data-qty-stepper>
+              <button type="button" data-qty-decrease aria-label="Reducir cantidad">${icon('minus')}</button>
+              <input type="number" min="1" value="1" data-qty-input aria-label="Cantidad" />
+              <button type="button" data-qty-increase aria-label="Aumentar cantidad">${icon('plus')}</button>
+            </div>
+          `}
+          ${addToCartButton(product, { className: 'btn-primary' })}
+        </div>
+        <a class="btn btn-ghost" href="${whatsappLink(config, product.nombre)}" target="_blank" rel="noreferrer">${icon('message')} Consultar por WhatsApp</a>
       </article>
     </section>
     <section class="section detail-grid">
@@ -156,14 +191,21 @@ export const renderProduct = (config) => {
       <article class="detail-card"><h2>Modo de uso</h2><p>${product.modoUso}</p></article>
     </section>
     <section class="section">
+      ${sectionHeading('Reseñas', 'Lo que dicen quienes ya lo probaron')}
+      ${reviewsSection(reviews)}
+    </section>
+    <section class="section">
       ${sectionHeading('Relacionados', 'También podría interesarte')}
-      <div class="product-grid">${(related.length ? related : getFeaturedProducts().slice(0, 3)).map(productCard).join('')}</div>
+      <div class="product-grid">${(related.length ? related : (await getFeaturedProducts()).slice(0, 3)).map(productCard).join('')}</div>
     </section>
   `);
   setupNavigation();
+  setupCart(config);
+  setupReviewForm(product.id);
+  setupProductQty();
 };
 
-export const renderAbout = (config) => {
+export const renderAbout = async (config) => {
   const blocks = [
     ['Historia', config.historia],
     ['Misión', config.mision],
@@ -183,9 +225,10 @@ export const renderAbout = (config) => {
     </section>
   `);
   setupNavigation();
+  setupCart(config);
 };
 
-export const renderContact = (config) => {
+export const renderContact = async (config) => {
   app().innerHTML = pageShell(config, 'contacto', `
     <section class="page-hero compact">
       <span class="eyebrow">Contacto</span>
@@ -195,9 +238,9 @@ export const renderContact = (config) => {
     <section class="contact-layout">
       <div class="contact-panel">
         ${contactLink('WhatsApp', whatsappLink(config), config.telefono, 'message')}
-        ${contactLink('Instagram', config.instagram, '@saviare', 'heart')}
-        ${contactLink('Facebook', config.facebook, 'Saviare', 'leaf')}
-        ${contactLink('TikTok', config.tiktok, '@saviare', 'spark')}
+        ${socialLink('Instagram', config.instagram, config.instagramHandle, 'instagram', 'qr-instagram.jpg')}
+        ${socialLink('Facebook', config.facebook, config.facebookHandle, 'facebook')}
+        ${socialLink('TikTok', config.tiktok, config.tiktokHandle, 'tiktok', 'qr-tiktok.jpg')}
         ${contactLink('Correo', `mailto:${config.correo}`, config.correo, 'mail')}
       </div>
       <form class="contact-form" aria-label="Formulario visual de contacto">
@@ -212,6 +255,7 @@ export const renderContact = (config) => {
     </section>
   `);
   setupNavigation();
+  setupCart(config);
 };
 
 const detailList = (title, items) => `
@@ -228,3 +272,101 @@ const contactLink = (label, href, value, iconName) => `
     <strong>${value}</strong>
   </a>
 `;
+
+const socialLink = (label, href, handle, iconName, qrFile) => `
+  <a class="contact-link ${qrFile ? 'has-qr' : ''}" href="${href}" target="_blank" rel="noreferrer">
+    ${qrFile ? `<img class="contact-qr" src="${getSocialImage(qrFile)}" alt="Código QR para seguir a Saviare en ${label}" loading="lazy" />` : ''}
+    <span class="contact-link-body">
+      ${icon(iconName)}
+      <span>${label}</span>
+      <strong>${handle}</strong>
+    </span>
+  </a>
+`;
+
+const formatReviewDate = (value) =>
+  new Intl.DateTimeFormat('es-PE', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(value));
+
+const reviewsSection = (reviews) => `
+  <div class="review-list" data-review-list>
+    ${reviews.length
+      ? reviews.map((review) => `
+        <article class="detail-card review-card">
+          ${starRating(review.calificacion)}
+          <p>${escapeHtml(review.comentario)}</p>
+          <div class="review-meta">
+            <strong>${escapeHtml(review.nombre_cliente)}</strong>
+            <span>${formatReviewDate(review.created_at)}</span>
+          </div>
+        </article>
+      `).join('')
+      : '<p class="empty-state">Todavía no hay reseñas para este producto. ¡Sé la primera persona en opinar!</p>'}
+  </div>
+  <form class="contact-form review-form" data-review-form aria-label="Escribir una reseña">
+    <label>Nombre<input data-review-name type="text" placeholder="Tu nombre" required maxlength="80" /></label>
+    <label>Calificación
+      <select data-review-rating required>
+        <option value="5">5 - Excelente</option>
+        <option value="4">4 - Muy bueno</option>
+        <option value="3">3 - Bueno</option>
+        <option value="2">2 - Regular</option>
+        <option value="1">1 - Malo</option>
+      </select>
+    </label>
+    <label>Comentario<textarea data-review-comment rows="4" placeholder="Cuéntanos tu experiencia" required maxlength="500"></textarea></label>
+    <button class="btn btn-primary" type="submit">Enviar reseña ${icon('arrow')}</button>
+    <p class="review-form-note" data-review-note></p>
+  </form>
+`;
+
+const setupProductQty = () => {
+  const stepper = document.querySelector('[data-qty-stepper]');
+  const addButton = document.querySelector('.product-info [data-add-cart]');
+  if (!stepper || !addButton) return;
+
+  const input = stepper.querySelector('[data-qty-input]');
+  const syncQty = () => {
+    const value = Math.max(1, Number(input.value) || 1);
+    input.value = value;
+    addButton.dataset.cartQty = value;
+  };
+
+  stepper.querySelector('[data-qty-increase]').addEventListener('click', () => {
+    input.value = Math.max(1, Number(input.value) || 1) + 1;
+    syncQty();
+  });
+  stepper.querySelector('[data-qty-decrease]').addEventListener('click', () => {
+    input.value = Math.max(1, Number(input.value) || 1) - 1;
+    syncQty();
+  });
+  input.addEventListener('input', syncQty);
+  syncQty();
+};
+
+const setupReviewForm = (productId) => {
+  const form = document.querySelector('[data-review-form]');
+  if (!form) return;
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const note = form.querySelector('[data-review-note]');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const nombre = form.querySelector('[data-review-name]').value.trim();
+    const calificacion = Number(form.querySelector('[data-review-rating]').value);
+    const comentario = form.querySelector('[data-review-comment]').value.trim();
+
+    if (!nombre || !comentario) return;
+
+    submitButton.disabled = true;
+    try {
+      await submitReview({ productId, nombre, calificacion, comentario });
+      form.reset();
+      note.textContent = 'Gracias por tu reseña. Quedará publicada en cuanto sea revisada.';
+    } catch (error) {
+      console.error('No se pudo enviar la reseña:', error);
+      note.textContent = 'No pudimos enviar tu reseña. Intenta nuevamente en unos minutos.';
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+};

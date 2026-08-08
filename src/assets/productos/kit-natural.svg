@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Kit natural Saviare">
-  <rect width="800" height="600" fill="#F7F6F2"/>
-  <rect x="176" y="282" width="178" height="162" rx="40" fill="#FFFFFF"/>
-  <rect x="396" y="172" width="126" height="270" rx="34" fill="#FFFFFF"/>
-  <rect x="420" y="126" width="78" height="68" rx="18" fill="#4F7A5A"/>
-  <rect x="292" y="218" width="120" height="224" rx="32" fill="#EFE4D5"/>
-  <path d="M510 356c74-70 132-78 178-36-56 16-102 50-136 98" fill="none" stroke="#7FA36B" stroke-width="12" stroke-linecap="round"/>
-  <path d="M646 306c-54 8-88 42-98 96 54-4 88-39 98-96Z" fill="#4F7A5A"/>
-</svg>

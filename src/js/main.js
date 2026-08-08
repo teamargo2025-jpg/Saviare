@@ -13,4 +13,8 @@ const routes = {
   contacto: renderContact
 };
 
-routes[page]?.(config);
+routes[page]?.(config).catch((error) => {
+  console.error('No se pudo cargar la página:', error);
+  const app = document.querySelector('#app');
+  if (app) app.innerHTML = '<p class="empty-state">No pudimos cargar el catálogo en este momento. Intenta de nuevo en unos minutos.</p>';
+});

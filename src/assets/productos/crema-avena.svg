@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Crema corporal de avena">
-  <rect width="800" height="600" fill="#F2EFE6"/>
-  <ellipse cx="402" cy="426" rx="206" ry="48" fill="#D8CBB8" opacity=".55"/>
-  <rect x="260" y="180" width="280" height="260" rx="48" fill="#FFFFFF"/>
-  <rect x="298" y="132" width="204" height="78" rx="22" fill="#4F7A5A"/>
-  <rect x="310" y="286" width="180" height="86" rx="14" fill="#EEE3D1"/>
-  <path d="M565 240c50-42 96-50 140-22-40 18-72 48-94 90" fill="none" stroke="#7FA36B" stroke-width="12" stroke-linecap="round"/>
-</svg>

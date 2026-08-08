@@ -9,7 +9,8 @@ export default defineConfig({
         catalogo: 'catalogo.html',
         producto: 'producto.html',
         nosotros: 'nosotros.html',
-        contacto: 'contacto.html'
+        contacto: 'contacto.html',
+        admin: 'admin.html'
       }
     }
   }

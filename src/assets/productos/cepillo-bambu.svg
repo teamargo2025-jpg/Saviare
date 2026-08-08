@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Cepillo dental de bambú">
-  <rect width="800" height="600" fill="#F7F6F2"/>
-  <rect x="160" y="290" width="470" height="56" rx="28" fill="#D8CBB8"/>
-  <rect x="540" y="246" width="92" height="132" rx="28" fill="#FFFFFF"/>
-  <g stroke="#7FA36B" stroke-width="10" stroke-linecap="round">
-    <path d="M560 264v-58M584 264v-66M608 264v-58"/>
-  </g>
-  <path d="M184 318c78 12 163 11 262 0" fill="none" stroke="#BBA98F" stroke-width="8" stroke-linecap="round"/>
-</svg>
