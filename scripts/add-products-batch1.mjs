@@ -253,7 +253,7 @@ const run = async () => {
         imagenes: imagenUrl ? [imagenUrl] : [],
         destacado: false,
         activo: true,
-        disponible: true
+        stock: 20
       },
       { onConflict: 'slug' }
     );

@@ -39,7 +39,7 @@ export const renderProductsView = async (container, setStatus) => {
             <div class="product-card-tags">
               <span class="pill">${product.categorias?.nombre ?? 'Sin categoría'}</span>
               ${product.activo ? '' : '<span class="pill pill-muted">Inactivo</span>'}
-              ${product.disponible ? '' : '<span class="pill pill-muted">Agotado</span>'}
+              ${product.stock > 0 ? `<span class="pill">Stock: ${product.stock}</span>` : '<span class="pill pill-muted">Agotado</span>'}
               ${product.destacado ? '<span class="pill">Destacado</span>' : ''}
             </div>
             <h3>${product.nombre}</h3>
@@ -48,7 +48,7 @@ export const renderProductsView = async (container, setStatus) => {
           <div class="admin-actions">
             <button class="btn btn-ghost" type="button" data-edit="${product.id}">Editar</button>
             <button class="btn btn-ghost" type="button" data-toggle-activo="${product.id}">${product.activo ? 'Desactivar' : 'Activar'}</button>
-            <button class="btn btn-ghost" type="button" data-toggle-disponible="${product.id}">${product.disponible ? 'Marcar agotado' : 'Marcar disponible'}</button>
+            ${product.stock > 0 ? `<button class="btn btn-ghost" type="button" data-mark-agotado="${product.id}">Agotar</button>` : ''}
             <button class="btn btn-ghost" type="button" data-delete="${product.id}">Eliminar</button>
           </div>
         </article>
@@ -72,9 +72,9 @@ export const renderProductsView = async (container, setStatus) => {
         <div class="admin-thumb-row" data-p-imagen-principal-preview></div>
         <label>Agregar imágenes a la galería<input data-p-imagenes type="file" accept="image/*" multiple /></label>
         <div class="admin-thumb-row" data-p-imagenes-preview></div>
+        <label>Unidades en stock<input data-p-stock type="number" min="0" step="1" required /></label>
         <label class="admin-checkbox"><input data-p-destacado type="checkbox" /> Destacado</label>
         <label class="admin-checkbox"><input data-p-activo type="checkbox" /> Activo (visible en el catálogo)</label>
-        <label class="admin-checkbox"><input data-p-disponible type="checkbox" /> Disponible (no agotado)</label>
         <div class="admin-dialog-actions">
           <button class="btn btn-ghost" type="button" data-product-cancel>Cancelar</button>
           <button class="btn btn-primary" type="submit" data-product-submit>Guardar</button>
@@ -122,7 +122,7 @@ export const renderProductsView = async (container, setStatus) => {
     form.querySelector('[data-p-modouso]').value = product?.modo_uso ?? '';
     form.querySelector('[data-p-destacado]').checked = Boolean(product?.destacado);
     form.querySelector('[data-p-activo]').checked = product ? product.activo : true;
-    form.querySelector('[data-p-disponible]').checked = product ? product.disponible : true;
+    form.querySelector('[data-p-stock]').value = product?.stock ?? 0;
     form.querySelector('[data-p-imagen-principal]').value = '';
     form.querySelector('[data-p-imagenes]').value = '';
     mainPreview.innerHTML = product?.imagen_principal
@@ -164,11 +164,10 @@ export const renderProductsView = async (container, setStatus) => {
     });
   });
 
-  container.querySelectorAll('[data-toggle-disponible]').forEach((button) => {
+  container.querySelectorAll('[data-mark-agotado]').forEach((button) => {
     button.addEventListener('click', async () => {
-      const product = products.find((item) => item.id === button.dataset.toggleDisponible);
-      await updateProduct(product.id, { disponible: !product.disponible });
-      setStatus(`Producto marcado como ${product.disponible ? 'agotado' : 'disponible'}.`);
+      await updateProduct(button.dataset.markAgotado, { stock: 0 });
+      setStatus('Producto marcado como agotado.');
       refresh();
     });
   });
@@ -220,7 +219,7 @@ export const renderProductsView = async (container, setStatus) => {
         imagenes: pendingImagenes,
         destacado: form.querySelector('[data-p-destacado]').checked,
         activo: form.querySelector('[data-p-activo]').checked,
-        disponible: form.querySelector('[data-p-disponible]').checked
+        stock: Number(form.querySelector('[data-p-stock]').value)
       };
 
       if (editingId) {

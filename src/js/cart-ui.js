@@ -1,5 +1,5 @@
 import { addToCart, clearCart, getCartItems, getCartTotal, removeFromCart, setCartQuantity, subscribeToCart } from './cart.js';
-import { formatPrice } from './data.js';
+import { formatPrice, recordOrder } from './data.js';
 import { icon } from './components.js';
 
 const buildCartMessage = (config, items) => {
@@ -97,7 +97,22 @@ export const setupCart = (config) => {
   backdrop.addEventListener('click', closeDrawer);
   clearBtn.addEventListener('click', () => clearCart());
   whatsappBtn.addEventListener('click', (event) => {
-    if (whatsappBtn.getAttribute('aria-disabled') === 'true') event.preventDefault();
+    if (whatsappBtn.getAttribute('aria-disabled') === 'true') {
+      event.preventDefault();
+      return;
+    }
+
+    const items = getCartItems();
+    recordOrder({
+      items: items.map((item) => ({
+        producto_id: item.id,
+        slug: item.slug,
+        nombre: item.nombre,
+        precio: item.precio,
+        cantidad: item.cantidad
+      })),
+      total: getCartTotal()
+    }).catch((error) => console.error('No se pudo registrar el pedido:', error));
   });
 
   document.body.addEventListener('click', (event) => {

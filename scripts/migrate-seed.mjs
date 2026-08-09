@@ -119,7 +119,7 @@ const run = async () => {
         imagenes,
         destacado: Boolean(producto.destacado),
         activo: Boolean(producto.activo),
-        disponible: true
+        stock: 20
       },
       { onConflict: 'slug' }
     );

@@ -731,9 +731,12 @@ p {
   }
 
   .split,
-  .catalog-layout,
   .product-detail {
     grid-template-columns: 0.8fr 1.2fr;
+  }
+
+  .catalog-layout {
+    grid-template-columns: 260px 1fr;
   }
 
   .product-grid {

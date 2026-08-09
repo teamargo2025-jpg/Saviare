@@ -17,7 +17,8 @@ const mapProduct = (row) => ({
   imagenes: row.imagenes ?? [],
   destacado: row.destacado,
   activo: row.activo,
-  disponible: row.disponible
+  stock: row.stock,
+  disponible: row.stock > 0
 });
 
 export const getConfig = () => configuracion;
@@ -72,6 +73,11 @@ export const submitReview = async ({ productId, nombre, calificacion, comentario
     calificacion,
     comentario
   });
+  if (error) throw error;
+};
+
+export const recordOrder = async ({ items, total }) => {
+  const { error } = await supabase.from('pedidos').insert({ items, total });
   if (error) throw error;
 };
 

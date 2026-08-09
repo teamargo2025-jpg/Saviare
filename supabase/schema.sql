@@ -42,7 +42,7 @@ create table productos (
   imagenes text[] not null default '{}',
   destacado boolean not null default false,
   activo boolean not null default true,
-  disponible boolean not null default true,
+  stock integer not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -55,6 +55,14 @@ create table resenas (
   comentario text,
   estado text not null default 'pendiente' check (estado in ('pendiente', 'aprobada', 'oculta')),
   created_at timestamptz not null default now()
+);
+
+create table pedidos (
+  id uuid primary key default gen_random_uuid(),
+  items jsonb not null,
+  total numeric(10, 2) not null check (total >= 0),
+  created_at timestamptz not null default now(),
+  synced_to_argonauts boolean not null default false
 );
 
 create index resenas_producto_id_idx on resenas(producto_id);
@@ -80,6 +88,7 @@ for each row execute function set_updated_at();
 alter table categorias enable row level security;
 alter table productos enable row level security;
 alter table resenas enable row level security;
+alter table pedidos enable row level security;
 
 -- Helper: ¿la petición viene autenticada como el único admin?
 create or replace function is_admin()
@@ -119,6 +128,16 @@ create policy "resenas_update_admin" on resenas
 
 create policy "resenas_delete_admin" on resenas
   for delete using (is_admin());
+
+-- --- pedidos: cualquiera registra el suyo, solo el admin lo lee/gestiona ---
+create policy "pedidos_insert_public" on pedidos
+  for insert with check (true);
+
+create policy "pedidos_select_admin" on pedidos
+  for select using (is_admin());
+
+create policy "pedidos_update_admin" on pedidos
+  for update using (is_admin()) with check (is_admin());
 
 -- ============================================================
 -- Storage: bucket público de imágenes de producto
