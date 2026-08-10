@@ -8,7 +8,7 @@ import { renderPedidosView } from './admin/views/pedidos.js';
 
 const config = getConfig();
 const root = () => document.querySelector('#admin-app');
-const panelControlUrl = import.meta.env.VITE_PANEL_CONTROL_URL || 'http://localhost:5173';
+const panelControlUrl = import.meta.env.VITE_PANEL_CONTROL_URL || 'http://localhost:5174';
 
 const TABS = [
   { id: 'productos', label: 'Productos', render: renderProductsView },

@@ -770,6 +770,32 @@ p {
   background: rgba(100, 112, 95, 0.16);
 }
 
+.pill-warning {
+  color: #92400e;
+  background: rgba(217, 119, 6, 0.18);
+}
+
+.admin-notifications {
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  background: rgba(217, 119, 6, 0.08);
+}
+
+.admin-notifications h3 {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  color: #92400e;
+}
+
+.admin-notifications ul {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 0.88rem;
+  color: var(--color-text);
+}
+
 .star-rating {
   display: inline-flex;
   gap: 2px;

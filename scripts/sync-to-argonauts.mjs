@@ -85,7 +85,7 @@ const run = async () => {
   console.log('Sincronizando inventario (snapshot completo de productos activos)...');
   const { data: productos, error: productosError } = await supabase
     .from('productos')
-    .select('slug, nombre, stock, precio')
+    .select('slug, nombre, stock, stock_minimo, precio')
     .eq('activo', true);
   if (productosError) throw productosError;
 
@@ -94,6 +94,7 @@ const run = async () => {
       externalRef: producto.slug,
       name: producto.nombre,
       stock: producto.stock,
+      minimumStock: producto.stock_minimo,
       unitCost: producto.precio
     }))
   });

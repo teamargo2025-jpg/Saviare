@@ -43,6 +43,7 @@ create table productos (
   destacado boolean not null default false,
   activo boolean not null default true,
   stock integer not null default 0,
+  stock_minimo integer not null default 5 check (stock_minimo >= 0),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

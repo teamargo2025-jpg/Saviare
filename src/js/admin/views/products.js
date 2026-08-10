@@ -27,7 +27,22 @@ export const renderProductsView = async (container, setStatus) => {
   let editingId = null;
   let pendingImagenes = [];
 
+  const lowStockProducts = products.filter(
+    (product) => product.activo && product.stock > 0 && product.stock <= product.stock_minimo
+  );
+  const outOfStockProducts = products.filter((product) => product.activo && product.stock === 0);
+  const alertProducts = [...outOfStockProducts, ...lowStockProducts];
+
   container.innerHTML = `
+    ${alertProducts.length ? `
+      <div class="admin-notifications">
+        <h3>🔔 ${alertProducts.length} producto(s) necesitan reposición</h3>
+        <ul>
+          ${outOfStockProducts.map((product) => `<li><strong>${product.nombre}</strong> — agotado</li>`).join('')}
+          ${lowStockProducts.map((product) => `<li><strong>${product.nombre}</strong> — quedan ${product.stock} (mínimo: ${product.stock_minimo})</li>`).join('')}
+        </ul>
+      </div>
+    ` : ''}
     <div class="admin-toolbar">
       <button class="btn btn-primary" type="button" data-new-product>+ Nuevo producto</button>
     </div>
@@ -40,6 +55,7 @@ export const renderProductsView = async (container, setStatus) => {
               <span class="pill">${product.categorias?.nombre ?? 'Sin categoría'}</span>
               ${product.activo ? '' : '<span class="pill pill-muted">Inactivo</span>'}
               ${product.stock > 0 ? `<span class="pill">Stock: ${product.stock}</span>` : '<span class="pill pill-muted">Agotado</span>'}
+              ${product.stock > 0 && product.stock <= product.stock_minimo ? '<span class="pill pill-warning">Stock bajo</span>' : ''}
               ${product.destacado ? '<span class="pill">Destacado</span>' : ''}
             </div>
             <h3>${product.nombre}</h3>
@@ -73,6 +89,7 @@ export const renderProductsView = async (container, setStatus) => {
         <label>Agregar imágenes a la galería<input data-p-imagenes type="file" accept="image/*" multiple /></label>
         <div class="admin-thumb-row" data-p-imagenes-preview></div>
         <label>Unidades en stock<input data-p-stock type="number" min="0" step="1" required /></label>
+        <label>Stock mínimo (avisa cuando llegue a este número)<input data-p-stock-minimo type="number" min="0" step="1" required /></label>
         <label class="admin-checkbox"><input data-p-destacado type="checkbox" /> Destacado</label>
         <label class="admin-checkbox"><input data-p-activo type="checkbox" /> Activo (visible en el catálogo)</label>
         <div class="admin-dialog-actions">
@@ -123,6 +140,7 @@ export const renderProductsView = async (container, setStatus) => {
     form.querySelector('[data-p-destacado]').checked = Boolean(product?.destacado);
     form.querySelector('[data-p-activo]').checked = product ? product.activo : true;
     form.querySelector('[data-p-stock]').value = product?.stock ?? 0;
+    form.querySelector('[data-p-stock-minimo]').value = product?.stock_minimo ?? 5;
     form.querySelector('[data-p-imagen-principal]').value = '';
     form.querySelector('[data-p-imagenes]').value = '';
     mainPreview.innerHTML = product?.imagen_principal
@@ -219,7 +237,8 @@ export const renderProductsView = async (container, setStatus) => {
         imagenes: pendingImagenes,
         destacado: form.querySelector('[data-p-destacado]').checked,
         activo: form.querySelector('[data-p-activo]').checked,
-        stock: Number(form.querySelector('[data-p-stock]').value)
+        stock: Number(form.querySelector('[data-p-stock]').value),
+        stock_minimo: Number(form.querySelector('[data-p-stock-minimo]').value)
       };
 
       if (editingId) {
