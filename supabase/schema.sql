@@ -64,7 +64,8 @@ create table pedidos (
   total numeric(10, 2) not null check (total >= 0),
   created_at timestamptz not null default now(),
   synced_to_argonauts boolean not null default false,
-  estado text not null default 'pendiente' check (estado in ('pendiente', 'confirmado', 'cancelado'))
+  estado text not null default 'pendiente' check (estado in ('pendiente', 'confirmado', 'cancelado')),
+  origen text not null default 'whatsapp' check (origen in ('whatsapp', 'qr'))
 );
 
 create index resenas_producto_id_idx on resenas(producto_id);

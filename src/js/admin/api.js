@@ -115,3 +115,33 @@ export const cancelPedido = async (id) => {
   const { error } = await supabase.from('pedidos').update({ estado: 'cancelado' }).eq('id', id);
   if (error) throw error;
 };
+
+export const recordDirectSale = async ({ items, total }) => {
+  const productIds = items.map((item) => item.producto_id);
+
+  const { data: productos, error: fetchError } = await supabase
+    .from('productos')
+    .select('id, stock')
+    .in('id', productIds);
+  if (fetchError) throw fetchError;
+
+  const stockById = new Map(productos.map((producto) => [producto.id, producto.stock]));
+
+  for (const item of items) {
+    if (!stockById.has(item.producto_id)) continue;
+    const nuevoStock = Math.max(0, stockById.get(item.producto_id) - item.cantidad);
+    const { error } = await supabase
+      .from('productos')
+      .update({ stock: nuevoStock })
+      .eq('id', item.producto_id);
+    if (error) throw error;
+  }
+
+  const { error: insertError } = await supabase.from('pedidos').insert({
+    items,
+    total,
+    estado: 'confirmado',
+    origen: 'qr'
+  });
+  if (insertError) throw insertError;
+};

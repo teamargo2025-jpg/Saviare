@@ -5,6 +5,8 @@ import { renderProductsView } from './admin/views/products.js';
 import { renderCategoriesView } from './admin/views/categories.js';
 import { renderReviewsView } from './admin/views/reviews.js';
 import { renderPedidosView } from './admin/views/pedidos.js';
+import { renderQrCodesView } from './admin/views/qr-codes.js';
+import { renderScanSellView } from './admin/views/scan-sell.js';
 
 const config = getConfig();
 const root = () => document.querySelector('#admin-app');
@@ -13,6 +15,8 @@ const panelControlUrl = import.meta.env.VITE_PANEL_CONTROL_URL || 'http://localh
 const TABS = [
   { id: 'productos', label: 'Productos', render: renderProductsView },
   { id: 'pedidos', label: 'Pedidos', render: renderPedidosView },
+  { id: 'vender', label: 'Vender (escanear)', render: renderScanSellView },
+  { id: 'qr', label: 'Códigos QR', render: renderQrCodesView },
   { id: 'categorias', label: 'Categorías', render: renderCategoriesView },
   { id: 'resenas', label: 'Reseñas', render: renderReviewsView }
 ];
