@@ -99,16 +99,17 @@ const run = async () => {
   });
   console.log(`  - ${productos.length} producto(s) sincronizados.`);
 
-  console.log('Buscando pedidos nuevos...');
+  console.log('Buscando pedidos confirmados sin sincronizar...');
   const { data: pedidos, error: pedidosError } = await supabase
     .from('pedidos')
     .select('*')
     .eq('synced_to_argonauts', false)
+    .eq('estado', 'confirmado')
     .order('created_at', { ascending: true });
   if (pedidosError) throw pedidosError;
 
   if (!pedidos.length) {
-    console.log('  - No hay pedidos nuevos que sincronizar.');
+    console.log('  - No hay pedidos confirmados nuevos que sincronizar.');
   }
 
   for (const pedido of pedidos) {

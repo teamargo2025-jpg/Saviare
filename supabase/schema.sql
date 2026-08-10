@@ -62,7 +62,8 @@ create table pedidos (
   items jsonb not null,
   total numeric(10, 2) not null check (total >= 0),
   created_at timestamptz not null default now(),
-  synced_to_argonauts boolean not null default false
+  synced_to_argonauts boolean not null default false,
+  estado text not null default 'pendiente' check (estado in ('pendiente', 'confirmado', 'cancelado'))
 );
 
 create index resenas_producto_id_idx on resenas(producto_id);

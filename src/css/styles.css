@@ -1022,6 +1022,16 @@ p {
   background: rgba(100, 112, 95, 0.18);
 }
 
+.status-badge.status-confirmado {
+  color: var(--color-primary);
+  background: rgba(163, 173, 115, 0.22);
+}
+
+.status-badge.status-cancelado {
+  color: #a4453a;
+  background: rgba(164, 69, 58, 0.14);
+}
+
 @media (max-width: 720px) {
   .admin-row {
     grid-template-columns: auto 1fr;
