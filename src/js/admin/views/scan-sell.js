@@ -62,6 +62,11 @@ export const renderScanSellView = async (container, setStatus) => {
     cartList.querySelectorAll('[data-inc]').forEach((button) => {
       button.addEventListener('click', () => {
         const entry = cart.get(button.dataset.inc);
+        const product = productBySlug.get(entry.slug);
+        if (entry.cantidad >= product.stock) {
+          setStatus(`No hay más stock de "${entry.nombre}" (quedan ${product.stock}).`, true);
+          return;
+        }
         entry.cantidad += 1;
         paintCart();
       });
@@ -90,8 +95,17 @@ export const renderScanSellView = async (container, setStatus) => {
     if (now - (lastScanAt.get(slug) ?? 0) < RESCAN_DELAY_MS) return;
     lastScanAt.set(slug, now);
 
+    if (product.stock <= 0) {
+      scanStatus.textContent = `Sin stock: "${product.nombre}" está agotado.`;
+      return;
+    }
+
     const existing = cart.get(product.id);
     if (existing) {
+      if (existing.cantidad >= product.stock) {
+        scanStatus.textContent = `No hay más stock de "${product.nombre}" (quedan ${product.stock}).`;
+        return;
+      }
       existing.cantidad += 1;
     } else {
       cart.set(product.id, {
