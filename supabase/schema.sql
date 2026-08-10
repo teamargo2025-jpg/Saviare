@@ -65,7 +65,8 @@ create table pedidos (
   created_at timestamptz not null default now(),
   synced_to_argonauts boolean not null default false,
   estado text not null default 'pendiente' check (estado in ('pendiente', 'confirmado', 'cancelado')),
-  origen text not null default 'whatsapp' check (origen in ('whatsapp', 'qr'))
+  origen text not null default 'whatsapp' check (origen in ('whatsapp', 'qr')),
+  comprobante_url text
 );
 
 create index resenas_producto_id_idx on resenas(producto_id);
@@ -164,3 +165,20 @@ create policy "productos_storage_update_admin" on storage.objects
 
 create policy "productos_storage_delete_admin" on storage.objects
   for delete using (bucket_id = 'productos' and is_admin());
+
+-- ============================================================
+-- Storage: bucket privado de comprobantes de pago (Yape, etc.)
+-- ============================================================
+
+insert into storage.buckets (id, name, public)
+values ('comprobantes', 'comprobantes', false)
+on conflict (id) do nothing;
+
+create policy "comprobantes_storage_select_admin" on storage.objects
+  for select using (bucket_id = 'comprobantes' and is_admin());
+
+create policy "comprobantes_storage_write_admin" on storage.objects
+  for insert with check (bucket_id = 'comprobantes' and is_admin());
+
+create policy "comprobantes_storage_delete_admin" on storage.objects
+  for delete using (bucket_id = 'comprobantes' and is_admin());

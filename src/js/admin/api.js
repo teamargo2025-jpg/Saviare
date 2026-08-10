@@ -145,3 +145,25 @@ export const recordDirectSale = async ({ items, total }) => {
   });
   if (insertError) throw insertError;
 };
+
+export const uploadComprobante = async (file, pedidoId) => {
+  const path = `${pedidoId}/${Date.now()}-${file.name}`;
+  const { error } = await supabase.storage.from('comprobantes').upload(path, file);
+  if (error) throw error;
+
+  const { error: updateError } = await supabase
+    .from('pedidos')
+    .update({ comprobante_url: path })
+    .eq('id', pedidoId);
+  if (updateError) throw updateError;
+
+  return path;
+};
+
+export const getComprobanteUrl = async (path) => {
+  const { data, error } = await supabase.storage
+    .from('comprobantes')
+    .createSignedUrl(path, 60 * 10);
+  if (error) throw error;
+  return data.signedUrl;
+};

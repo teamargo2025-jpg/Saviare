@@ -1,4 +1,4 @@
-import { cancelPedido, confirmPedido, listAllPedidos } from '../api.js';
+import { cancelPedido, confirmPedido, getComprobanteUrl, listAllPedidos, uploadComprobante } from '../api.js';
 
 const TABS = [
   { id: 'pendiente', label: 'Pendientes' },
@@ -39,6 +39,13 @@ export const renderPedidosView = async (container, setStatus) => {
           <h3>${formatPrice(pedido.total)}</h3>
           <p>${formatDate(pedido.created_at)}</p>
           <ul>${itemsSummary(pedido.items)}</ul>
+          <div class="comprobante-row">
+            ${pedido.comprobante_url ? `<button class="text-link" type="button" data-view-comprobante="${pedido.id}">Ver comprobante</button>` : ''}
+            <label class="text-link comprobante-upload">
+              ${pedido.comprobante_url ? 'Reemplazar comprobante' : 'Adjuntar comprobante (Yape)'}
+              <input type="file" accept="image/*" data-upload-comprobante="${pedido.id}" hidden />
+            </label>
+          </div>
         </div>
         <div class="admin-actions">${actionsFor(pedido)}</div>
       </article>
@@ -49,6 +56,12 @@ export const renderPedidosView = async (container, setStatus) => {
     });
     list.querySelectorAll('[data-cancel]').forEach((button) => {
       button.addEventListener('click', () => handleCancel(button.dataset.cancel));
+    });
+    list.querySelectorAll('[data-view-comprobante]').forEach((button) => {
+      button.addEventListener('click', () => handleViewComprobante(button.dataset.viewComprobante));
+    });
+    list.querySelectorAll('[data-upload-comprobante]').forEach((input) => {
+      input.addEventListener('change', (event) => handleUploadComprobante(input.dataset.uploadComprobante, event.target.files[0]));
     });
   };
 
@@ -78,6 +91,30 @@ export const renderPedidosView = async (container, setStatus) => {
       paint();
     } catch (error) {
       setStatus('No se pudo cancelar el pedido.', true);
+    }
+  };
+
+  const handleUploadComprobante = async (id, file) => {
+    if (!file) return;
+    try {
+      const path = await uploadComprobante(file, id);
+      const pedido = pedidos.find((item) => item.id === id);
+      if (pedido) pedido.comprobante_url = path;
+      setStatus('Comprobante adjuntado.');
+      paint();
+    } catch (error) {
+      setStatus('No se pudo subir el comprobante.', true);
+    }
+  };
+
+  const handleViewComprobante = async (id) => {
+    const pedido = pedidos.find((item) => item.id === id);
+    if (!pedido?.comprobante_url) return;
+    try {
+      const url = await getComprobanteUrl(pedido.comprobante_url);
+      window.open(url, '_blank', 'noopener');
+    } catch (error) {
+      setStatus('No se pudo abrir el comprobante.', true);
     }
   };
 
