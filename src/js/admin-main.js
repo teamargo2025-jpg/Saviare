@@ -8,6 +8,7 @@ import { renderPedidosView } from './admin/views/pedidos.js';
 
 const config = getConfig();
 const root = () => document.querySelector('#admin-app');
+const panelControlUrl = import.meta.env.VITE_PANEL_CONTROL_URL || 'http://localhost:5173';
 
 const TABS = [
   { id: 'productos', label: 'Productos', render: renderProductsView },
@@ -53,6 +54,7 @@ const renderPanel = (session) => {
         <span class="eyebrow">${config.empresa} · Administración</span>
         <div class="admin-header-actions">
           <span>${session.user.email}</span>
+          <a class="btn btn-ghost" href="${panelControlUrl}" target="_blank" rel="noopener">Panel de control</a>
           <button class="btn btn-ghost" type="button" data-logout>Cerrar sesión</button>
         </div>
       </header>
