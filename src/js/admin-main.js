@@ -7,6 +7,7 @@ import { renderReviewsView } from './admin/views/reviews.js';
 import { renderPedidosView } from './admin/views/pedidos.js';
 import { renderQrCodesView } from './admin/views/qr-codes.js';
 import { renderScanSellView } from './admin/views/scan-sell.js';
+import { icon } from './components.js';
 
 const config = getConfig();
 const root = () => document.querySelector('#admin-app');
@@ -30,12 +31,26 @@ const renderLogin = (errorMessage = '') => {
         <span class="eyebrow">${config.empresa}</span>
         <h1>Acceso administrador</h1>
         <label>Correo<input data-login-email type="email" required autocomplete="username" /></label>
-        <label>Contraseña<input data-login-password type="password" required autocomplete="current-password" /></label>
+        <label>Contraseña
+          <span class="password-field">
+            <input data-login-password type="password" required autocomplete="current-password" />
+            <button class="password-toggle" type="button" data-toggle-password aria-label="Mostrar contraseña">${icon('eye')}</button>
+          </span>
+        </label>
         <button class="btn btn-primary" type="submit">Ingresar</button>
         <p class="status-message ${errorMessage ? 'status-error' : ''}" data-login-status>${errorMessage}</p>
       </form>
     </div>
   `;
+
+  root().querySelector('[data-toggle-password]').addEventListener('click', (event) => {
+    const button = event.currentTarget;
+    const input = root().querySelector('[data-login-password]');
+    const showing = input.type === 'text';
+    input.type = showing ? 'password' : 'text';
+    button.innerHTML = icon(showing ? 'eye' : 'eye-off');
+    button.setAttribute('aria-label', showing ? 'Mostrar contraseña' : 'Ocultar contraseña');
+  });
 
   root().querySelector('[data-login-form]').addEventListener('submit', async (event) => {
     event.preventDefault();

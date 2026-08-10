@@ -1442,3 +1442,44 @@ p {
   font-weight: 700;
   margin: 10px 0;
 }
+
+/* ============================================================
+   Campo de contraseña con botón para mostrar/ocultar
+   ============================================================ */
+
+.password-field {
+  position: relative;
+  display: block;
+}
+
+.password-field input {
+  padding-right: 44px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  color: var(--color-muted);
+  background: transparent;
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  color: var(--color-primary);
+  background: rgba(31, 61, 46, 0.08);
+}
+
+.password-toggle .icon {
+  width: 18px;
+  height: 18px;
+}

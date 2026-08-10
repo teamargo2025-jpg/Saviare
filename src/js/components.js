@@ -32,7 +32,9 @@ export const icon = (name) => {
     incense: '<path d="M12 22V10"/><path d="M9 8c0-2 1.4-2 1.4-4S9 2 9 2"/><path d="M15 8c0-2-1.4-2-1.4-4S15 2 15 2"/>',
     capsule: '<rect x="3" y="9" width="18" height="6" rx="3"/><path d="M12 9v6"/>',
     root: '<path d="M12 3v6"/><path d="M12 9c-3 0-5 3-5 7 0 3 2 5 5 5s5-2 5-5c0-4-2-7-5-7Z"/>',
-    droplet: '<path d="M12 3c4 5 7 8.5 7 12a7 7 0 1 1-14 0c0-3.5 3-7 7-12Z"/>'
+    droplet: '<path d="M12 3c4 5 7 8.5 7 12a7 7 0 1 1-14 0c0-3.5 3-7 7-12Z"/>',
+    eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+    'eye-off': '<path d="M2 12s4-7 10-7c1.7 0 3.2.4 4.5 1M22 12s-4 7-10 7c-1.7 0-3.2-.4-4.5-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="M2 2l20 20"/>'
   };
 
   return `<svg class="icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths[name] || paths.leaf}</svg>`;
