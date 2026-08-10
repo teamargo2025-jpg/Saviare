@@ -1483,3 +1483,22 @@ p {
   width: 18px;
   height: 18px;
 }
+
+.scan-sell-result {
+  min-height: 1.6em;
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.scan-sell-result:not(:empty) {
+  background: rgba(107, 122, 58, 0.18);
+  color: var(--color-primary);
+}
+
+.scan-sell-result.status-error {
+  background: rgba(164, 69, 58, 0.14);
+  color: #a4453a;
+}

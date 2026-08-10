@@ -24,6 +24,7 @@ export const renderScanSellView = async (container, setStatus) => {
         <p class="scan-sell-total" data-cart-total>Total: ${currency.format(0)}</p>
         <button class="btn btn-primary" type="button" data-finish-sale disabled>Finalizar venta</button>
         <button class="btn btn-ghost" type="button" data-clear-cart disabled>Vaciar</button>
+        <p class="scan-sell-result" data-scan-result></p>
       </div>
     </div>
   `;
@@ -34,6 +35,7 @@ export const renderScanSellView = async (container, setStatus) => {
   const cartTotalEl = container.querySelector('[data-cart-total]');
   const finishButton = container.querySelector('[data-finish-sale]');
   const clearButton = container.querySelector('[data-clear-cart]');
+  const resultEl = container.querySelector('[data-scan-result]');
 
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -152,6 +154,8 @@ export const renderScanSellView = async (container, setStatus) => {
 
   finishButton.addEventListener('click', async () => {
     finishButton.disabled = true;
+    resultEl.textContent = '';
+    resultEl.classList.remove('status-error');
     try {
       const items = [...cart.values()];
       const total = items.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
@@ -160,8 +164,13 @@ export const renderScanSellView = async (container, setStatus) => {
       paintCart();
       setStatus('Venta registrada y stock actualizado.');
       scanStatus.textContent = 'Venta registrada. Apunta la cámara al siguiente producto.';
+      resultEl.textContent = '✅ Venta registrada y stock actualizado.';
+      resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } catch (error) {
       setStatus('No se pudo registrar la venta.', true);
+      resultEl.textContent = '❌ No se pudo registrar la venta. Intenta de nuevo.';
+      resultEl.classList.add('status-error');
+      resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       finishButton.disabled = false;
     }
   });

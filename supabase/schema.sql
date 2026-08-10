@@ -142,6 +142,9 @@ create policy "pedidos_select_admin" on pedidos
 create policy "pedidos_update_admin" on pedidos
   for update using (is_admin()) with check (is_admin());
 
+create policy "pedidos_delete_admin" on pedidos
+  for delete using (is_admin());
+
 -- ============================================================
 -- Storage: bucket público de imágenes de producto
 -- ============================================================
