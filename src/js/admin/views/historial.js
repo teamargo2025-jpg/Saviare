@@ -14,6 +14,29 @@ const itemsSummary = (items) =>
 
 const origenLabel = (origen) => (origen === 'qr' ? 'En persona (QR)' : 'WhatsApp');
 
+const OVERDUE_DAYS = 2;
+
+const daysSince = (value) => Math.floor((Date.now() - new Date(value).getTime()) / (1000 * 60 * 60 * 24));
+
+const comprobanteCell = (venta) => {
+  if (venta.comprobante_url) {
+    return `<button class="text-link" type="button" data-view-comprobante="${venta.id}">✅ Ver comprobante</button>`;
+  }
+
+  const dias = daysSince(venta.created_at);
+  const overdue = dias >= OVERDUE_DAYS;
+  const label = overdue
+    ? `🔴 Falta subir (hace ${dias} día${dias === 1 ? '' : 's'})`
+    : '⚠️ Falta subir';
+
+  return `
+    <label class="text-link comprobante-upload ${overdue ? 'comprobante-overdue' : 'comprobante-missing'}">
+      ${label}
+      <input type="file" accept="image/*" data-upload-comprobante="${venta.id}" hidden />
+    </label>
+  `;
+};
+
 export const renderHistorialView = async (container, setStatus) => {
   container.innerHTML = '<p class="empty-state">Cargando historial…</p>';
 
@@ -45,25 +68,20 @@ export const renderHistorialView = async (container, setStatus) => {
           </tr>
         </thead>
         <tbody>
-          ${ventas.map((venta) => `
-            <tr>
+          ${ventas.map((venta) => {
+            const overdue = !venta.comprobante_url && daysSince(venta.created_at) >= OVERDUE_DAYS;
+            return `
+            <tr class="${overdue ? 'historial-row-overdue' : ''}">
               <td><span class="status-badge status-confirmado">Concretada</span></td>
               <td>${formatDate(venta.created_at)}</td>
               <td>${formatTime(venta.created_at)}</td>
               <td>${origenLabel(venta.origen)}</td>
               <td class="historial-productos">${itemsSummary(venta.items)}</td>
               <td>${formatPrice(venta.total)}</td>
-              <td>
-                ${venta.comprobante_url
-                  ? `<button class="text-link" type="button" data-view-comprobante="${venta.id}">✅ Ver comprobante</button>`
-                  : `<label class="text-link comprobante-upload comprobante-missing">
-                       ⚠️ Falta subir
-                       <input type="file" accept="image/*" data-upload-comprobante="${venta.id}" hidden />
-                     </label>`
-                }
-              </td>
+              <td>${comprobanteCell(venta)}</td>
             </tr>
-          `).join('')}
+          `;
+          }).join('')}
         </tbody>
       </table>
       </div>

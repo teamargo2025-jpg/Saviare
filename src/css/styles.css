@@ -1558,3 +1558,16 @@ p {
 .historial-table tbody tr:hover {
   background: rgba(107, 122, 58, 0.06);
 }
+
+.historial-row-overdue {
+  background: rgba(164, 69, 58, 0.08);
+}
+
+.historial-row-overdue:hover {
+  background: rgba(164, 69, 58, 0.14);
+}
+
+.comprobante-overdue {
+  color: #a4453a;
+  font-weight: 700;
+}
