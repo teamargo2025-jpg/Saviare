@@ -82,6 +82,12 @@ const brandVisual = (config) => config.logo
   ? `<img class="brand-icon" src="${getLogoImage(config.logoIcono || config.logo)}" alt="" /><span class="brand-name">${config.empresa}</span>`
   : `<span class="brand-mark">${icon('leaf')}</span><span>${config.empresa}</span>`;
 
+export const lowStockBadge = (product) => {
+  if (product.disponible === false) return '';
+  if (product.stockMinimo == null || product.stock > product.stockMinimo) return '';
+  return `<span class="pill pill-urgent">¡Solo quedan ${product.stock}!</span>`;
+};
+
 export const productCard = (product) => `
   <article class="product-card">
     <a class="product-media" href="producto.html?producto=${product.slug}" aria-label="Ver ${product.nombre}">
@@ -90,7 +96,7 @@ export const productCard = (product) => `
     <div class="product-card-body">
       <div class="product-card-tags">
         <span class="pill">${product.categoria}</span>
-        ${product.disponible === false ? '<span class="pill pill-muted">Agotado</span>' : ''}
+        ${product.disponible === false ? '<span class="pill pill-muted">Agotado</span>' : lowStockBadge(product)}
       </div>
       <h3>${product.nombre}</h3>
       <p>${product.descripcion}</p>

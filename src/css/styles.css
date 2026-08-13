@@ -775,6 +775,12 @@ p {
   background: rgba(217, 119, 6, 0.18);
 }
 
+.pill-urgent {
+  color: #a4453a;
+  background: rgba(164, 69, 58, 0.14);
+  font-weight: 700;
+}
+
 .admin-notifications {
   margin-bottom: 20px;
   padding: 16px 18px;

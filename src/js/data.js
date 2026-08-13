@@ -18,6 +18,7 @@ const mapProduct = (row) => ({
   destacado: row.destacado,
   activo: row.activo,
   stock: row.stock,
+  stockMinimo: row.stock_minimo,
   disponible: row.stock > 0
 });
 

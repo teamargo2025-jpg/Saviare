@@ -8,7 +8,7 @@ import {
   getProducts,
   submitReview
 } from './data.js';
-import { addToCartButton, icon, pageShell, productCard, sectionHeading, setupNavigation, starRating, whatsappLink } from './components.js';
+import { addToCartButton, icon, lowStockBadge, pageShell, productCard, sectionHeading, setupNavigation, starRating, whatsappLink } from './components.js';
 import { escapeHtml } from '../utils/sanitize.js';
 import { setupCart } from './cart-ui.js';
 
@@ -167,7 +167,7 @@ export const renderProduct = async (config) => {
       <article class="product-info">
         <div class="product-card-tags">
           <span class="pill">${product.categoria}</span>
-          ${product.disponible === false ? '<span class="pill pill-muted">Agotado</span>' : ''}
+          ${product.disponible === false ? '<span class="pill pill-muted">Agotado</span>' : lowStockBadge(product)}
         </div>
         <h1>${product.nombre}</h1>
         <strong class="price">${formatPrice(product.precio)}</strong>
