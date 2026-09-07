@@ -1,4 +1,5 @@
 import { getComprobanteUrl, listAllPedidos, uploadComprobante } from '../api.js';
+import { escapeHtml } from '../../../utils/sanitize.js';
 
 const formatDate = (value) =>
   new Intl.DateTimeFormat('es-PE', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(value));
@@ -10,7 +11,28 @@ const formatPrice = (value) =>
   new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(value);
 
 const itemsSummary = (items) =>
-  (items ?? []).map((item) => `${item.cantidad}x ${item.nombre}`).join(', ');
+  (items ?? []).map((item) => `${item.cantidad}x ${escapeHtml(item.nombre)}`).join(', ');
+
+const descargarCsvVentas = (ventas) => {
+  const encabezados = ['Fecha', 'Hora', 'Canal', 'Productos', 'Total', 'Comprobante'];
+  const escapar = (valor) => `"${String(valor ?? '').replace(/"/g, '""')}"`;
+  const filas = ventas.map((venta) => [
+    formatDate(venta.created_at),
+    formatTime(venta.created_at),
+    origenLabel(venta.origen),
+    (venta.items ?? []).map((item) => `${item.cantidad}x ${item.nombre}`).join(' | '),
+    venta.total,
+    venta.comprobante_url ? 'Sí' : 'No'
+  ]);
+  const csv = [encabezados, ...filas].map((fila) => fila.map(escapar).join(',')).join('\r\n');
+  const blob = new Blob([`﻿${csv}`], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const enlace = document.createElement('a');
+  enlace.href = url;
+  enlace.download = `saviare-historial-${new Date().toISOString().slice(0, 10)}.csv`;
+  enlace.click();
+  URL.revokeObjectURL(url);
+};
 
 const origenLabel = (origen) => (origen === 'qr' ? 'En persona (QR)' : 'WhatsApp');
 
@@ -122,9 +144,16 @@ export const renderHistorialView = async (container, setStatus) => {
   container.innerHTML = `
     <div class="admin-toolbar admin-toolbar-noprint">
       <p class="qr-hint">${ventas.length} venta(s) concretada(s) en total.</p>
+      ${ventas.length ? `
+        <button class="btn btn-ghost" type="button" data-descargar-csv>⬇ Descargar CSV</button>
+        <button class="btn btn-ghost" type="button" data-imprimir-historial>🖨 Imprimir</button>
+      ` : ''}
     </div>
     <div data-historial-table></div>
   `;
+
+  container.querySelector('[data-descargar-csv]')?.addEventListener('click', () => descargarCsvVentas(ventas));
+  container.querySelector('[data-imprimir-historial]')?.addEventListener('click', () => window.print());
 
   paint();
 };

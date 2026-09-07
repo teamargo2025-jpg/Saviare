@@ -80,29 +80,34 @@ export const listAllPedidos = async () => {
   return data;
 };
 
-export const confirmPedido = async (pedido) => {
-  const items = pedido.items ?? [];
+// Descuenta el stock de cada item (ignora los que no traen
+// producto_id o ya no existen) — compartido por confirmPedido y
+// recordDirectSale para que no se desincronicen entre si.
+const decrementStock = async (items) => {
   const productIds = items.map((item) => item.producto_id).filter(Boolean);
+  if (!productIds.length) return;
 
-  if (productIds.length) {
-    const { data: productos, error: fetchError } = await supabase
+  const { data: productos, error: fetchError } = await supabase
+    .from('productos')
+    .select('id, stock')
+    .in('id', productIds);
+  if (fetchError) throw fetchError;
+
+  const stockById = new Map(productos.map((producto) => [producto.id, producto.stock]));
+
+  for (const item of items) {
+    if (!item.producto_id || !stockById.has(item.producto_id)) continue;
+    const nuevoStock = Math.max(0, stockById.get(item.producto_id) - item.cantidad);
+    const { error } = await supabase
       .from('productos')
-      .select('id, stock')
-      .in('id', productIds);
-    if (fetchError) throw fetchError;
-
-    const stockById = new Map(productos.map((producto) => [producto.id, producto.stock]));
-
-    for (const item of items) {
-      if (!item.producto_id || !stockById.has(item.producto_id)) continue;
-      const nuevoStock = Math.max(0, stockById.get(item.producto_id) - item.cantidad);
-      const { error } = await supabase
-        .from('productos')
-        .update({ stock: nuevoStock })
-        .eq('id', item.producto_id);
-      if (error) throw error;
-    }
+      .update({ stock: nuevoStock })
+      .eq('id', item.producto_id);
+    if (error) throw error;
   }
+};
+
+export const confirmPedido = async (pedido) => {
+  await decrementStock(pedido.items ?? []);
 
   const { error: updateError } = await supabase
     .from('pedidos')
@@ -117,25 +122,7 @@ export const cancelPedido = async (id) => {
 };
 
 export const recordDirectSale = async ({ items, total }) => {
-  const productIds = items.map((item) => item.producto_id);
-
-  const { data: productos, error: fetchError } = await supabase
-    .from('productos')
-    .select('id, stock')
-    .in('id', productIds);
-  if (fetchError) throw fetchError;
-
-  const stockById = new Map(productos.map((producto) => [producto.id, producto.stock]));
-
-  for (const item of items) {
-    if (!stockById.has(item.producto_id)) continue;
-    const nuevoStock = Math.max(0, stockById.get(item.producto_id) - item.cantidad);
-    const { error } = await supabase
-      .from('productos')
-      .update({ stock: nuevoStock })
-      .eq('id', item.producto_id);
-    if (error) throw error;
-  }
+  await decrementStock(items);
 
   const { error: insertError } = await supabase.from('pedidos').insert({
     items,

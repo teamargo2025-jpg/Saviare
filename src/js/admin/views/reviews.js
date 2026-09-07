@@ -1,4 +1,5 @@
 import { deleteReview, listAllReviews, setReviewStatus } from '../api.js';
+import { escapeHtml } from '../../../utils/sanitize.js';
 
 const TABS = [
   { id: 'pendiente', label: 'Pendientes' },
@@ -27,12 +28,12 @@ export const renderReviewsView = async (container, setStatus) => {
     const filtered = reviews.filter((review) => review.estado === activeTab);
     const list = container.querySelector('[data-review-admin-list]');
     list.innerHTML = filtered.length ? filtered.map((review) => `
-      <article class="detail-card admin-row review-card">
+      <article class="detail-card admin-row admin-row--no-thumb review-card">
         <div class="admin-row-body">
           <span class="status-badge status-${review.estado}">${review.estado}</span>
-          <h3>${review.productos?.nombre ?? 'Producto eliminado'}</h3>
-          <p><strong>${review.calificacion}/5</strong> · ${review.nombre_cliente} · ${formatDate(review.created_at)}</p>
-          <p>${review.comentario ?? ''}</p>
+          <h3>${escapeHtml(review.productos?.nombre ?? 'Producto eliminado')}</h3>
+          <p><strong>${review.calificacion}/5</strong> · ${escapeHtml(review.nombre_cliente)} · ${formatDate(review.created_at)}</p>
+          <p>${escapeHtml(review.comentario ?? '')}</p>
         </div>
         <div class="admin-actions">${actionsFor(review)}</div>
       </article>

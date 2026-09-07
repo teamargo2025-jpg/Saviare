@@ -4,7 +4,9 @@ import { icon } from '../../components.js';
 
 const currency = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' });
 
-const BRAND_COLOR = '#1f3d2e';
+// Lee el color desde la variable CSS en vez de repetir el valor
+// literal, para que no se desincronice si cambia la paleta.
+const BRAND_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
 
 const ICON_RULES = [
   [/cepillo/, 'toothbrush'],

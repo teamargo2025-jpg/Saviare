@@ -1,4 +1,5 @@
 import { cancelPedido, confirmPedido, getComprobanteUrl, listAllPedidos, uploadComprobante } from '../api.js';
+import { escapeHtml } from '../../../utils/sanitize.js';
 
 const TABS = [
   { id: 'pendiente', label: 'Pendientes' },
@@ -13,7 +14,7 @@ const formatPrice = (value) =>
   new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(value);
 
 const itemsSummary = (items) =>
-  (items ?? []).map((item) => `<li>${item.cantidad}x ${item.nombre} (${formatPrice(item.precio)} c/u)</li>`).join('');
+  (items ?? []).map((item) => `<li>${item.cantidad}x ${escapeHtml(item.nombre)} (${formatPrice(item.precio)} c/u)</li>`).join('');
 
 const actionsFor = (pedido) => {
   if (pedido.estado !== 'pendiente') return '';
@@ -33,7 +34,7 @@ export const renderPedidosView = async (container, setStatus) => {
     const filtered = pedidos.filter((pedido) => pedido.estado === activeTab);
     const list = container.querySelector('[data-pedido-admin-list]');
     list.innerHTML = filtered.length ? filtered.map((pedido) => `
-      <article class="detail-card admin-row pedido-card">
+      <article class="detail-card admin-row admin-row--no-thumb pedido-card">
         <div class="admin-row-body">
           <span class="status-badge status-${pedido.estado}">${pedido.estado}</span>
           <h3>${formatPrice(pedido.total)}</h3>

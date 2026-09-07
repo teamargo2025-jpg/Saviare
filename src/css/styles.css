@@ -6,6 +6,8 @@
   --color-accent: #d7dcb7;
   --color-white: #ffffff;
   --color-muted: #64705f;
+  --color-error: #a4453a;
+  --color-warning: #92400e;
   --shadow: 0 24px 70px rgba(31, 61, 46, 0.12);
   --radius: 8px;
   --container: min(1160px, calc(100% - 32px));
@@ -771,12 +773,12 @@ p {
 }
 
 .pill-warning {
-  color: #92400e;
+  color: var(--color-warning);
   background: rgba(217, 119, 6, 0.18);
 }
 
 .pill-urgent {
-  color: #a4453a;
+  color: var(--color-error);
   background: rgba(164, 69, 58, 0.14);
   font-weight: 700;
 }
@@ -792,7 +794,7 @@ p {
 .admin-notifications h3 {
   margin: 0 0 8px;
   font-size: 0.95rem;
-  color: #92400e;
+  color: var(--color-warning);
 }
 
 .admin-notifications ul {
@@ -924,7 +926,7 @@ p {
 }
 
 .status-message.status-error {
-  color: #a4453a;
+  color: var(--color-error);
 }
 
 .admin-toolbar {
@@ -944,6 +946,12 @@ p {
   align-items: center;
   gap: 16px;
   padding: 16px;
+}
+
+/* Para filas sin miniatura (pedidos, reseñas) — sin la primera
+   columna angosta pensada para una imagen de 64px. */
+.admin-row--no-thumb {
+  grid-template-columns: 1fr auto;
 }
 
 .admin-row-body h3 {
@@ -1040,7 +1048,7 @@ p {
 }
 
 .status-badge.status-pendiente {
-  color: #8a5a12;
+  color: var(--color-warning);
   background: rgba(217, 164, 65, 0.22);
 }
 
@@ -1060,13 +1068,17 @@ p {
 }
 
 .status-badge.status-cancelado {
-  color: #a4453a;
+  color: var(--color-error);
   background: rgba(164, 69, 58, 0.14);
 }
 
 @media (max-width: 720px) {
   .admin-row {
     grid-template-columns: auto 1fr;
+  }
+
+  .admin-row--no-thumb {
+    grid-template-columns: 1fr;
   }
 
   .admin-actions {
@@ -1506,7 +1518,7 @@ p {
 
 .scan-sell-result.status-error {
   background: rgba(164, 69, 58, 0.14);
-  color: #a4453a;
+  color: var(--color-error);
 }
 
 .comprobante-row {
@@ -1521,7 +1533,7 @@ p {
 }
 
 .comprobante-missing {
-  color: #a4453a;
+  color: var(--color-error);
 }
 
 .historial-table-wrap {
@@ -1574,6 +1586,6 @@ p {
 }
 
 .comprobante-overdue {
-  color: #a4453a;
+  color: var(--color-error);
   font-weight: 700;
 }

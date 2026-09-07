@@ -176,17 +176,25 @@ export const renderProductsView = async (container, setStatus) => {
   container.querySelectorAll('[data-toggle-activo]').forEach((button) => {
     button.addEventListener('click', async () => {
       const product = products.find((item) => item.id === button.dataset.toggleActivo);
-      await updateProduct(product.id, { activo: !product.activo });
-      setStatus(`Producto ${product.activo ? 'desactivado' : 'activado'}.`);
-      refresh();
+      try {
+        await updateProduct(product.id, { activo: !product.activo });
+        setStatus(`Producto ${product.activo ? 'desactivado' : 'activado'}.`);
+        refresh();
+      } catch (error) {
+        setStatus('No se pudo actualizar el producto.', true);
+      }
     });
   });
 
   container.querySelectorAll('[data-mark-agotado]').forEach((button) => {
     button.addEventListener('click', async () => {
-      await updateProduct(button.dataset.markAgotado, { stock: 0 });
-      setStatus('Producto marcado como agotado.');
-      refresh();
+      try {
+        await updateProduct(button.dataset.markAgotado, { stock: 0 });
+        setStatus('Producto marcado como agotado.');
+        refresh();
+      } catch (error) {
+        setStatus('No se pudo marcar el producto como agotado.', true);
+      }
     });
   });
 
