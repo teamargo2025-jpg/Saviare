@@ -80,30 +80,21 @@ export const listAllPedidos = async () => {
   return data;
 };
 
-// Descuenta el stock de cada item (ignora los que no traen
-// producto_id o ya no existen) — compartido por confirmPedido y
+// Descuenta el stock de cada item — compartido por confirmPedido y
 // recordDirectSale para que no se desincronicen entre si.
+//
+// La resta la hace Postgres en una sola sentencia (funcion
+// descontar_stock). Antes se leia el stock aca y se escribia el
+// resultado ya calculado, asi que dos ventas simultaneas se pisaban
+// entre si y se vendia stock que no existia.
 const decrementStock = async (items) => {
-  const productIds = items.map((item) => item.producto_id).filter(Boolean);
-  if (!productIds.length) return;
+  const aDescontar = items
+    .filter((item) => item.producto_id && item.cantidad > 0)
+    .map((item) => ({ producto_id: item.producto_id, cantidad: item.cantidad }));
+  if (!aDescontar.length) return;
 
-  const { data: productos, error: fetchError } = await supabase
-    .from('productos')
-    .select('id, stock')
-    .in('id', productIds);
-  if (fetchError) throw fetchError;
-
-  const stockById = new Map(productos.map((producto) => [producto.id, producto.stock]));
-
-  for (const item of items) {
-    if (!item.producto_id || !stockById.has(item.producto_id)) continue;
-    const nuevoStock = Math.max(0, stockById.get(item.producto_id) - item.cantidad);
-    const { error } = await supabase
-      .from('productos')
-      .update({ stock: nuevoStock })
-      .eq('id', item.producto_id);
-    if (error) throw error;
-  }
+  const { error } = await supabase.rpc('descontar_stock', { p_items: aDescontar });
+  if (error) throw error;
 };
 
 export const confirmPedido = async (pedido) => {

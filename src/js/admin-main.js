@@ -1,4 +1,5 @@
 import '../css/styles.css';
+import { instalarRedDeErrores } from './error-global.js';
 import { getConfig } from './data.js';
 import { isAdminSession, onAuthChange, signIn, signOut } from './admin/session.js';
 import { renderProductsView } from './admin/views/products.js';
@@ -9,6 +10,8 @@ import { renderHistorialView } from './admin/views/historial.js';
 import { renderQrCodesView } from './admin/views/qr-codes.js';
 import { renderScanSellView } from './admin/views/scan-sell.js';
 import { icon } from './components.js';
+
+instalarRedDeErrores();
 
 const config = getConfig();
 const root = () => document.querySelector('#admin-app');

@@ -1,6 +1,9 @@
 import '../css/styles.css';
+import { instalarRedDeErrores } from './error-global.js';
 import { getConfig } from './data.js';
 import { renderAbout, renderCatalog, renderContact, renderHome, renderProduct } from './pages.js';
+
+instalarRedDeErrores();
 
 const config = getConfig();
 const page = document.body.dataset.page;

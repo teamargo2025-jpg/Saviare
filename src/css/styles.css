@@ -1589,3 +1589,37 @@ p {
   color: var(--color-error);
   font-weight: 700;
 }
+
+/* Aviso de error inesperado (src/js/error-global.js) */
+
+.error-global {
+  position: fixed;
+  z-index: 100;
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 14px;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 14px 18px;
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius);
+  background: var(--color-white);
+  box-shadow: var(--shadow);
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+.error-global button {
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-error);
+  color: var(--color-white);
+  font-weight: 700;
+  cursor: pointer;
+}
