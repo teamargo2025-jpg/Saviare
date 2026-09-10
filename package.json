@@ -7,10 +7,14 @@
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "sync:argonauts": "node scripts/sync-to-argonauts.mjs"
+    "sync:argonauts": "node scripts/sync-to-argonauts.mjs",
+    "test": "vitest run"
   },
   "devDependencies": {
-    "vite": "^7.0.0"
+    "jsdom": "^30.0.1",
+    "sharp": "^0.35.4",
+    "vite": "^7.0.0",
+    "vitest": "^5.0.0"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.2",

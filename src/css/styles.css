@@ -1623,3 +1623,170 @@ p {
   font-weight: 700;
   cursor: pointer;
 }
+
+/* ============================================================
+   Páginas legales
+   ============================================================ */
+
+.legal {
+  width: var(--container);
+  max-width: 780px;
+  margin: 0 auto 72px;
+}
+
+/* Un texto legal se lee de corrido: renglón corto y aire entre
+   líneas, o nadie pasa del segundo párrafo. */
+.legal p,
+.legal li {
+  color: var(--color-text);
+  font-size: 0.97rem;
+  line-height: 1.75;
+}
+
+.legal-bloque {
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(31, 61, 46, 0.1);
+}
+
+.legal-bloque:last-child {
+  border-bottom: 0;
+}
+
+.legal-bloque h2 {
+  margin: 0 0 10px;
+  color: var(--color-primary);
+  font-size: 1.15rem;
+}
+
+.legal-bloque ul {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.legal-bloque li {
+  margin-bottom: 8px;
+}
+
+.legal-aviso {
+  margin: 0 0 18px;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  border-left: 4px solid var(--color-warning);
+  background: rgba(146, 64, 14, 0.08);
+  color: var(--color-warning);
+}
+
+.legal-aviso code {
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: rgba(146, 64, 14, 0.12);
+  font-size: 0.88em;
+}
+
+/* ============================================================
+   Páginas de estado (gracias / 404)
+   ============================================================ */
+
+.estado-pagina {
+  width: var(--container);
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 64px 0 80px;
+  text-align: center;
+}
+
+.estado-emoji {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.estado-pagina h1 {
+  margin: 6px 0 14px;
+  color: var(--color-primary);
+  font-size: clamp(1.6rem, 5vw, 2.3rem);
+}
+
+.estado-texto {
+  margin: 0 auto 24px;
+  max-width: 46ch;
+  color: var(--color-muted);
+}
+
+/* Los pasos van alineados a la izquierda aunque la página esté
+   centrada: una lista numerada centrada es incómoda de seguir. */
+.estado-pasos {
+  margin: 0 auto 24px;
+  padding: 20px 24px 20px 40px;
+  max-width: 460px;
+  border-radius: var(--radius);
+  background: var(--color-white);
+  box-shadow: var(--shadow);
+  text-align: left;
+}
+
+.estado-pasos li {
+  margin-bottom: 8px;
+  color: var(--color-muted);
+}
+
+.estado-pasos li:last-child {
+  margin-bottom: 0;
+}
+
+.estado-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin: 26px 0 18px;
+}
+
+.estado-nota,
+.estado-horario {
+  margin: 0 auto;
+  max-width: 46ch;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.estado-horario {
+  margin-top: 14px;
+}
+
+/* ============================================================
+   Error dentro del carrito
+   ============================================================ */
+
+.cart-error {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border-left: 4px solid var(--color-error);
+  background: rgba(164, 69, 58, 0.08);
+  color: var(--color-error);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+  .estado-pagina {
+    padding: 40px 0 56px;
+  }
+
+  /* En un celular angosto, dos botones en fila quedan de 3 palabras
+     cortadas cada uno. Mejor uno debajo del otro y a lo ancho. */
+  .estado-acciones {
+    flex-direction: column;
+  }
+
+  .estado-acciones .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .legal-bloque {
+    padding: 18px 0;
+  }
+}

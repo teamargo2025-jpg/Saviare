@@ -1,3 +1,4 @@
+import { comprimirImagen } from '../comprimir-imagen.js';
 import { supabase } from '../supabase.js';
 
 export const listAllCategories = async () => {
@@ -46,8 +47,11 @@ export const deleteProduct = async (id) => {
 };
 
 export const uploadProductImage = async (file, slug) => {
-  const path = `${slug}/${Date.now()}-${file.name}`;
-  const { error } = await supabase.storage.from('productos').upload(path, file);
+  // Se comprime acá y no en la vista para que ninguna pantalla futura
+  // pueda saltearse el paso y volver a llenar el Storage.
+  const liviano = await comprimirImagen(file);
+  const path = `${slug}/${Date.now()}-${liviano.name}`;
+  const { error } = await supabase.storage.from('productos').upload(path, liviano);
   if (error) throw error;
   return supabase.storage.from('productos').getPublicUrl(path).data.publicUrl;
 };
@@ -125,8 +129,11 @@ export const recordDirectSale = async ({ items, total }) => {
 };
 
 export const uploadComprobante = async (file, pedidoId) => {
-  const path = `${pedidoId}/${Date.now()}-${file.name}`;
-  const { error } = await supabase.storage.from('comprobantes').upload(path, file);
+  // El comprobante es una captura de Yape: tiene que quedar legible,
+  // así que se comprime con más calidad que una foto de producto.
+  const liviano = await comprimirImagen(file, { maxLado: 1400, calidad: 0.9 });
+  const path = `${pedidoId}/${Date.now()}-${liviano.name}`;
+  const { error } = await supabase.storage.from('comprobantes').upload(path, liviano);
   if (error) throw error;
 
   const { error: updateError } = await supabase

@@ -42,6 +42,22 @@ export const setupCart = (config) => {
 
   if (!toggle || !drawer) return;
 
+  // El pedido ya salió por WhatsApp, así que el mensaje no es "falló
+  // todo": es "seguí por el chat, que del otro lado puede no haber
+  // quedado registrado".
+  const mostrarErrorPedido = () => {
+    let aviso = drawer.querySelector('[data-cart-error]');
+    if (!aviso) {
+      aviso = document.createElement('p');
+      aviso.className = 'cart-error';
+      aviso.setAttribute('data-cart-error', '');
+      aviso.setAttribute('role', 'alert');
+      whatsappBtn.insertAdjacentElement('beforebegin', aviso);
+    }
+    aviso.textContent =
+      'Abrimos WhatsApp, pero no pudimos guardar el pedido de nuestro lado. Mandanos el mensaje igual y lo cargamos a mano.';
+  };
+
   const openDrawer = () => {
     drawer.classList.add('open');
     backdrop.classList.add('open');
@@ -102,6 +118,10 @@ export const setupCart = (config) => {
       return;
     }
 
+    // El enlace a WhatsApp se deja seguir su curso normal (abre en otra
+    // pestaña de forma sincrónica, si no el navegador lo bloquearía).
+    // El registro del pedido va en paralelo, y recién ahí se decide qué
+    // ve el cliente en ESTA pestaña.
     const items = getCartItems();
     recordOrder({
       items: items.map((item) => ({
@@ -112,7 +132,18 @@ export const setupCart = (config) => {
         cantidad: item.cantidad
       })),
       total: getCartTotal()
-    }).catch((error) => console.error('No se pudo registrar el pedido:', error));
+    })
+      .then(() => {
+        clearCart();
+        window.location.href = 'gracias.html';
+      })
+      .catch((error) => {
+        // Antes esto solo iba a la consola: el cliente se iba a
+        // WhatsApp convencido de que el pedido estaba hecho y del lado
+        // del negocio no quedaba registro de nada. Ahora se dice.
+        console.error('No se pudo registrar el pedido:', error);
+        mostrarErrorPedido();
+      });
   });
 
   document.body.addEventListener('click', (event) => {

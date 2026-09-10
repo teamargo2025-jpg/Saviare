@@ -2,34 +2,11 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "saviare-dev",
-      "runtimeExecutable": "C:\\Program Files\\nodejs\\npm.cmd",
+      "name": "saviare",
+      "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "port": 5173
-    },
-    {
-      "name": "argonauts-frontend",
-      "runtimeExecutable": "C:\\Program Files\\nodejs\\npm.cmd",
-      "runtimeArgs": ["--prefix", "C:\\Users\\spin6\\Proyectos\\argonauts\\frontend", "run", "dev"],
-      "port": 5174
-    },
-    {
-      "name": "argonauts-backend",
-      "runtimeExecutable": "C:\\Program Files\\nodejs\\npm.cmd",
-      "runtimeArgs": ["--prefix", "C:\\Users\\spin6\\Proyectos\\argonauts\\backend", "run", "dev"],
-      "port": 3000
-    },
-    {
-      "name": "volka-menu-dev",
-      "runtimeExecutable": "C:\\Program Files\\nodejs\\npm.cmd",
-      "runtimeArgs": ["--prefix", "C:\\Users\\spin6\\Proyectos\\volka-menu", "run", "dev"],
-      "port": 5175
-    },
-    {
-      "name": "amyra-gym-dev",
-      "runtimeExecutable": "C:\\Program Files\\nodejs\\npm.cmd",
-      "runtimeArgs": ["--prefix", "C:\\Users\\spin6\\Proyectos\\amyra-gym", "run", "dev"],
-      "port": 5177
+      "port": 5173,
+      "url": "http://127.0.0.1:5173"
     }
   ]
 }

@@ -97,6 +97,7 @@ export const renderPedidosView = async (container, setStatus) => {
 
   const handleUploadComprobante = async (id, file) => {
     if (!file) return;
+    setStatus('Optimizando y subiendo el comprobante…');
     try {
       const path = await uploadComprobante(file, id);
       const pedido = pedidos.find((item) => item.id === id);
@@ -104,7 +105,12 @@ export const renderPedidosView = async (container, setStatus) => {
       setStatus('Comprobante adjuntado.');
       paint();
     } catch (error) {
-      setStatus('No se pudo subir el comprobante.', true);
+      setStatus(
+        error.message === 'imagen_demasiado_grande'
+          ? 'Esa captura pesa demasiado. Reducila desde la galería del celular y volvé a intentar.'
+          : 'No se pudo subir el comprobante. Revisá tu conexión e intentá de nuevo.',
+        true
+      );
     }
   };
 

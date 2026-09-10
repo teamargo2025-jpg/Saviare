@@ -69,11 +69,14 @@ export const footer = (config) => `
       <a href="catalogo.html">Catálogo</a>
       <a href="nosotros.html">Nosotros</a>
       <a href="contacto.html">Contacto</a>
+      <a href="privacidad.html">Privacidad</a>
+      <a href="terminos.html">Términos</a>
     </div>
     <div class="footer-contact">
       <span>${config.direccion}</span>
+      <span>${config.horario}</span>
       <a href="mailto:${config.correo}">${config.correo}</a>
-      <a href="${whatsappLink(config)}" target="_blank" rel="noreferrer">WhatsApp</a>
+      <a href="${whatsappLink(config)}" target="_blank" rel="noreferrer">WhatsApp ${config.telefono}</a>
     </div>
   </footer>
 `;

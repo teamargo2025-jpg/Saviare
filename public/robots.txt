@@ -1,4 +1,14 @@
+# El catálogo público sí se indexa; el panel del dueño no.
 User-agent: *
 Allow: /
+Disallow: /admin.html
+Disallow: /gracias.html
 
-Sitemap: https://example.com/sitemap.xml
+Sitemap: https://teamargo2025-jpg.github.io/Saviare/sitemap.xml
+
+# OJO: mientras el sitio viva en teamargo2025-jpg.github.io/Saviare/,
+# los buscadores NO leen este archivo — solo miran robots.txt en la
+# raíz del dominio, que no controlamos. Lo que de verdad protege al
+# panel es la etiqueta <meta name="robots" content="noindex"> que
+# admin.html ya tiene. Este archivo pasa a servir cuando el sitio se
+# mude a su propio dominio.

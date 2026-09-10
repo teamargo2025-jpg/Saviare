@@ -6,6 +6,7 @@ import {
   updateProduct,
   uploadProductImage
 } from '../api.js';
+import { MAX_ENTRADA_MB } from '../../comprimir-imagen.js';
 import { slugify } from '../../../utils/slug.js';
 
 const linesToArray = (value) =>
@@ -202,14 +203,23 @@ export const renderProductsView = async (container, setStatus) => {
     const files = Array.from(event.target.files ?? []);
     if (!files.length) return;
     const nombre = form.querySelector('[data-p-nombre]').value.trim() || 'producto';
-    formStatus.textContent = 'Subiendo imágenes…';
+    formStatus.classList.remove('status-error');
+    formStatus.textContent = files.length === 1
+      ? 'Optimizando y subiendo la imagen…'
+      : `Optimizando y subiendo ${files.length} imágenes…`;
     try {
       const uploaded = await Promise.all(files.map((file) => uploadProductImage(file, slugify(nombre))));
       pendingImagenes.push(...uploaded);
       renderGalleryPreview();
       formStatus.textContent = '';
     } catch (error) {
-      formStatus.textContent = 'No se pudieron subir una o más imágenes.';
+      formStatus.classList.add('status-error');
+      // Vale la pena distinguir: "pesa demasiado" lo arregla el dueño
+      // solo; "no se pudo subir" no, y no tiene sentido que reintente
+      // con la misma foto esperando otro resultado.
+      formStatus.textContent = error.message === 'imagen_demasiado_grande'
+        ? `Esa imagen pesa más de ${MAX_ENTRADA_MB} MB. Reducila desde la galería del celular y volvé a intentar.`
+        : 'No se pudieron subir una o más imágenes. Revisá tu conexión e intentá de nuevo.';
     }
     event.target.value = '';
   });
@@ -260,7 +270,10 @@ export const renderProductsView = async (container, setStatus) => {
       dialog.close();
       refresh();
     } catch (error) {
-      formStatus.textContent = 'No se pudo guardar el producto. Revisa los campos e intenta de nuevo.';
+      formStatus.classList.add('status-error');
+      formStatus.textContent = error.message === 'imagen_demasiado_grande'
+        ? `La imagen principal pesa más de ${MAX_ENTRADA_MB} MB. Reducila y volvé a intentar.`
+        : 'No se pudo guardar el producto. Revisá los campos e intentá de nuevo.';
     } finally {
       submitButton.disabled = false;
     }
