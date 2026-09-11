@@ -1,15 +1,32 @@
 :root {
-  --color-primary: #1f3d2e;
-  --color-secondary: #6b7a3a;
-  --color-bg: #f5f3e8;
-  --color-text: #243128;
-  --color-accent: #d7dcb7;
-  --color-white: #ffffff;
-  --color-muted: #64705f;
-  --color-error: #a4453a;
-  --color-warning: #92400e;
-  --shadow: 0 24px 70px rgba(31, 61, 46, 0.12);
-  --radius: 8px;
+  /* El campo es verde profundo y los productos son la unica fuente de luz.
+     El hueso es tinta, nunca fondo: en cuanto vuelve a ser campo reaparece
+     el crema de plantilla que este diseno vino a quitar. */
+  --color-bg: #153026;
+  --color-surface: #1e4133;
+  --color-text: #e9e2d2;
+  --color-muted: #a3b099;
+
+  /* Los dos acentos son los colores reales de la maca amarilla y la roja.
+     Salen del producto, no del gusto. */
+  --color-primary: #c79a3a;
+  --color-accent: #8e2b23;
+  --color-secondary: #93a86a;
+
+  --color-error: #e0796d;
+  --color-warning: #c79a3a;
+
+  /* El radio codifica jerarquia en lugar de ser el mismo en todo: una foto
+     se comporta como un impreso y casi no lo tiene; un control es una
+     pastilla porque se pulsa. */
+  --radius: 3px;
+  --radius-control: 999px;
+
+  /* La elevacion se dice con una linea, no con una sombra repetida bajo
+     cada caja. Sobre fondo oscuro la sombra no se ve; el borde si. */
+  --line: 1px solid rgba(233, 226, 210, 0.14);
+  --shadow: none;
+
   --container: min(1160px, calc(100% - 32px));
 }
 
@@ -25,8 +42,20 @@ body {
   margin: 0;
   background: var(--color-bg);
   color: var(--color-text);
-  font-family: 'Poppins', system-ui, sans-serif;
+  font-family: 'Karla', system-ui, sans-serif;
   line-height: 1.6;
+}
+
+/* Dos familias y bien distintas entre si. Fraunces lleva la personalidad
+   —es un serif calido, con algo de irregularidad, que va con lo hecho a
+   mano— y Karla se mantiene callada para que el texto se lea. */
+h1,
+h2,
+h3,
+.brand-name {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.015em;
 }
 
 img {
@@ -99,7 +128,7 @@ textarea {
   border: 1px solid rgba(31, 61, 46, 0.2);
   border-radius: 50%;
   color: var(--color-primary);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .site-nav {
@@ -111,7 +140,7 @@ textarea {
   padding: 16px;
   border: 1px solid rgba(31, 61, 46, 0.12);
   border-radius: var(--radius);
-  background: var(--color-white);
+  background: var(--color-surface);
   box-shadow: var(--shadow);
 }
 
@@ -140,7 +169,7 @@ textarea {
   border: 1px solid rgba(31, 61, 46, 0.16);
   border-radius: 50%;
   color: var(--color-primary);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .hero,
@@ -167,16 +196,14 @@ textarea {
   max-width: 640px;
 }
 
+/* Fuera las etiquetas en mayusculas espaciadas sobre cada titular. Eran la
+   senal mas repetida de pagina generada, y encima no decian nada que el
+   titular de debajo no dijera ya. El marcado se conserva por accesibilidad
+   y por si alguna vez hace falta recuperarlas. */
 .eyebrow,
 .section-heading span,
 .cta span {
-  display: inline-flex;
-  margin-bottom: 12px;
-  color: var(--color-primary);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0;
-  text-transform: uppercase;
+  display: none;
 }
 
 h1,
@@ -230,46 +257,46 @@ p {
   gap: 10px;
   padding: 12px 20px;
   border: 1px solid transparent;
-  border-radius: 999px;
+  border-radius: var(--radius-control);
   cursor: pointer;
   font-weight: 600;
-  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
-}
-
-.btn:hover {
-  transform: translateY(-2px);
+  /* El movimiento responde a lo que hace la persona, no se anuncia solo.
+     Fuera el levantar-y-proyectar-sombra de cada boton. */
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
 .btn-primary {
-  color: var(--color-white);
+  /* Ocre sobre verde: el texto va oscuro porque en blanco no llegaria al
+     contraste minimo. */
+  color: var(--color-bg);
   background: var(--color-primary);
-  box-shadow: 0 14px 30px rgba(31, 61, 46, 0.22);
+}
+
+.btn-primary:hover {
+  background: #d8ab4b;
 }
 
 .btn-ghost {
-  color: var(--color-primary);
-  border-color: rgba(31, 61, 46, 0.18);
-  background: var(--color-white);
+  color: var(--color-text);
+  border-color: rgba(233, 226, 210, 0.3);
+  background: transparent;
 }
 
+.btn-ghost:hover {
+  border-color: var(--color-text);
+}
+
+/* El heroe es la foto del producto, sin tarjeta blanca ni sombra debajo:
+   la imagen no necesita un marco que la presente. */
 .hero-image {
   position: relative;
   overflow: hidden;
   border-radius: var(--radius);
-  background: var(--color-white);
-  box-shadow: var(--shadow);
+  background: var(--color-surface);
 }
 
 .hero-logo {
-  position: absolute;
-  z-index: 2;
-  top: 22px;
-  left: 22px;
-  width: min(56%, 320px);
-  padding: 10px;
-  border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.76);
-  backdrop-filter: blur(10px);
+  display: none;
 }
 
 .hero-image img {
@@ -309,9 +336,9 @@ p {
 .contact-panel,
 .contact-form,
 .map-placeholder {
-  border: 1px solid rgba(31, 61, 46, 0.12);
+  border: var(--line);
   border-radius: var(--radius);
-  background: color-mix(in srgb, var(--color-white) 88%, var(--color-bg));
+  background: var(--color-surface);
 }
 
 .category-tile {
@@ -414,18 +441,18 @@ p {
   margin-bottom: 72px;
   padding: 36px;
   border-radius: var(--radius);
-  color: var(--color-white);
+  color: var(--color-surface);
   background: linear-gradient(135deg, #1f3d2e, #6b7a3a);
 }
 
 .cta p,
 .cta h2 {
-  color: var(--color-white);
+  color: var(--color-surface);
 }
 
 .cta .btn-primary {
   color: var(--color-primary);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .page-hero {
@@ -456,7 +483,7 @@ p {
   padding: 0 14px;
   border: 1px solid rgba(31, 61, 46, 0.14);
   border-radius: var(--radius);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .field input,
@@ -500,7 +527,7 @@ p {
   object-position: center 58%;
   padding: 0;
   border-radius: var(--radius);
-  background: var(--color-white);
+  background: var(--color-surface);
   box-shadow: var(--shadow);
 }
 
@@ -517,7 +544,7 @@ p {
   object-fit: cover;
   object-position: center 58%;
   padding: 0;
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .product-info {
@@ -654,7 +681,7 @@ p {
   background:
     linear-gradient(90deg, rgba(163, 173, 115, 0.18) 1px, transparent 1px),
     linear-gradient(rgba(163, 173, 115, 0.18) 1px, transparent 1px),
-    var(--color-white);
+    var(--color-surface);
   background-size: 28px 28px;
   font-weight: 700;
   text-align: center;
@@ -908,13 +935,13 @@ p {
   border: 1px solid rgba(31, 61, 46, 0.16);
   border-radius: 999px;
   color: var(--color-primary);
-  background: var(--color-white);
+  background: var(--color-surface);
   font-weight: 600;
   cursor: pointer;
 }
 
 .admin-tab.active {
-  color: var(--color-white);
+  color: var(--color-surface);
   background: var(--color-primary);
   border-color: var(--color-primary);
 }
@@ -996,7 +1023,7 @@ p {
   height: 20px;
   border: 0;
   border-radius: 50%;
-  color: var(--color-white);
+  color: var(--color-surface);
   background: var(--color-primary);
   cursor: pointer;
   line-height: 1;
@@ -1113,7 +1140,7 @@ p {
   border: 1px solid rgba(31, 61, 46, 0.16);
   border-radius: 50%;
   color: var(--color-primary);
-  background: var(--color-white);
+  background: var(--color-surface);
   cursor: pointer;
 }
 
@@ -1126,7 +1153,7 @@ p {
   height: 18px;
   padding: 0 4px;
   border-radius: 999px;
-  color: var(--color-white);
+  color: var(--color-surface);
   background: var(--color-secondary);
   font-size: 0.68rem;
   font-weight: 700;
@@ -1184,7 +1211,7 @@ p {
   border: 0;
   border-radius: 50%;
   color: var(--color-primary);
-  background: var(--color-white);
+  background: var(--color-surface);
   cursor: pointer;
 }
 
@@ -1201,7 +1228,7 @@ p {
   gap: 12px;
   padding: 12px;
   border-radius: var(--radius);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .cart-item img {
@@ -1279,7 +1306,7 @@ p {
   padding: 6px;
   border: 1px solid rgba(31, 61, 46, 0.16);
   border-radius: 999px;
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .qty-stepper button {
@@ -1343,7 +1370,7 @@ p {
   padding: 14px;
   border: 1px solid rgba(31, 61, 46, 0.16);
   border-radius: var(--radius);
-  background: var(--color-white);
+  background: var(--color-surface);
   text-align: center;
 }
 
@@ -1402,7 +1429,7 @@ p {
 }
 
 .scan-sell-camera {
-  background: var(--color-white);
+  background: var(--color-surface);
   border: 1px solid rgba(31, 61, 46, 0.16);
   border-radius: var(--radius);
   padding: 16px;
@@ -1421,7 +1448,7 @@ p {
 }
 
 .scan-sell-cart {
-  background: var(--color-white);
+  background: var(--color-surface);
   border: 1px solid rgba(31, 61, 46, 0.16);
   border-radius: var(--radius);
   padding: 16px;
@@ -1545,7 +1572,7 @@ p {
   width: 100%;
   min-width: 720px;
   border-collapse: collapse;
-  background: var(--color-white);
+  background: var(--color-surface);
   border-radius: var(--radius);
   overflow: hidden;
   font-size: 0.88rem;
@@ -1608,7 +1635,7 @@ p {
   padding: 14px 18px;
   border: 1px solid var(--color-error);
   border-radius: var(--radius);
-  background: var(--color-white);
+  background: var(--color-surface);
   box-shadow: var(--shadow);
   color: var(--color-error);
   font-weight: 600;
@@ -1619,7 +1646,7 @@ p {
   border: 0;
   border-radius: 999px;
   background: var(--color-error);
-  color: var(--color-white);
+  color: var(--color-surface);
   font-weight: 700;
   cursor: pointer;
 }
@@ -1721,7 +1748,7 @@ p {
   padding: 20px 24px 20px 40px;
   max-width: 460px;
   border-radius: var(--radius);
-  background: var(--color-white);
+  background: var(--color-surface);
   box-shadow: var(--shadow);
   text-align: left;
 }

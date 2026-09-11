@@ -1,4 +1,4 @@
-import { getBannerImage, getLogoImage, getSocialImage } from './assets.js';
+import { getBannerImage, getSocialImage } from './assets.js';
 import {
   formatPrice,
   getApprovedReviews,
@@ -14,8 +14,25 @@ import { setupCart } from './cart-ui.js';
 
 const app = () => document.querySelector('#app');
 
+// El heroe enseña un producto, no el logotipo. Lo primero que ve quien llega
+// debe ser lo unico que nadie mas tiene: el jabon con la avena a la vista, el
+// palo santo. El logo ya esta en la cabecera y repetirlo grande no informa de
+// nada. Solo se cae a la ilustracion de marca si no hay ni un producto, que es
+// un catalogo vacio y entonces da igual lo que se enseñe.
+const heroImagen = (producto) =>
+  producto?.imagenPrincipal || getBannerImage('hero-saviare.svg');
+
+const heroAlt = (producto) =>
+  producto?.nombre || 'Productos naturales Saviare';
+
 export const renderHome = async (config) => {
-  const [categories, featured] = await Promise.all([getCategories(), getFeaturedProducts()]);
+  const [categories, products, featured] = await Promise.all([getCategories(), getProducts(), getFeaturedProducts()]);
+
+  // Hoy no hay ningun producto marcado como destacado, y sin esto la portada
+  // enseñaba una seccion vacia. Mientras no se marquen desde el panel, se
+  // muestran los primeros del catalogo: es mejor que un hueco.
+  const escaparate = featured.length ? featured : products.slice(0, 3);
+  const protagonista = escaparate[0];
 
   app().innerHTML = pageShell(config, 'home', `
     <section class="hero">
@@ -24,13 +41,12 @@ export const renderHome = async (config) => {
         <h1>${config.eslogan}</h1>
         <p>Un catálogo curado de productos biodegradables, orgánicos y de cuidado personal para comprar con calma, confianza y propósito.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="catalogo.html">Ver catálogo ${icon('arrow')}</a>
+          <a class="btn btn-primary" href="catalogo.html">Ver catálogo</a>
           <a class="btn btn-ghost" href="contacto.html">Consultar ahora</a>
         </div>
       </div>
-      <div class="hero-image" aria-label="Productos naturales Saviare">
-        <img class="hero-logo" src="${getLogoImage(config.logo)}" alt="${config.empresa}" />
-        <img src="${getBannerImage('hero-saviare.svg')}" alt="Selección elegante de productos naturales Saviare" />
+      <div class="hero-image">
+        <img src="${heroImagen(protagonista)}" alt="${heroAlt(protagonista)}" />
       </div>
     </section>
 
@@ -49,7 +65,7 @@ export const renderHome = async (config) => {
 
     <section class="section tinted">
       ${sectionHeading('Destacados', 'Favoritos para empezar', 'Una selección inicial lista para consulta directa por WhatsApp.')}
-      <div class="product-grid">${featured.map(productCard).join('')}</div>
+      <div class="product-grid">${escaparate.map(productCard).join('')}</div>
     </section>
 
     <section class="section split">
@@ -66,7 +82,7 @@ export const renderHome = async (config) => {
     <section class="cta">
       <span>${config.empresa}</span>
       <h2>Elige productos con intención, sin perder elegancia.</h2>
-      <a class="btn btn-primary" href="catalogo.html">Descubrir productos ${icon('arrow')}</a>
+      <a class="btn btn-primary" href="catalogo.html">Descubrir productos</a>
     </section>
   `);
   setupNavigation();
@@ -256,7 +272,7 @@ export const renderContact = async (config) => {
         <label>Nombre<input type="text" placeholder="Tu nombre" /></label>
         <label>Correo<input type="email" placeholder="tu@email.com" /></label>
         <label>Mensaje<textarea rows="5" placeholder="Cuéntanos qué estás buscando"></textarea></label>
-        <button class="btn btn-primary" type="button">Enviar consulta visual ${icon('arrow')}</button>
+        <button class="btn btn-primary" type="button">Enviar consulta visual</button>
       </form>
       <div class="map-placeholder" role="img" aria-label="Mapa referencial">
         <span>${config.direccion}</span>
@@ -323,7 +339,7 @@ const reviewsSection = (reviews) => `
       </select>
     </label>
     <label>Comentario<textarea data-review-comment rows="4" placeholder="Cuéntanos tu experiencia" required maxlength="500"></textarea></label>
-    <button class="btn btn-primary" type="submit">Enviar reseña ${icon('arrow')}</button>
+    <button class="btn btn-primary" type="submit">Enviar reseña</button>
     <p class="review-form-note" data-review-note></p>
   </form>
 `;

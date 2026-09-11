@@ -105,7 +105,7 @@ export const productCard = (product) => `
       <p>${product.descripcion}</p>
       <div class="product-card-actions">
         <strong>${formatPrice(product.precio)}</strong>
-        <a class="text-link" href="producto-${product.slug}.html">Ver producto ${icon('arrow')}</a>
+        <a class="text-link" href="producto-${product.slug}.html">Ver producto</a>
       </div>
       ${addToCartButton(product)}
     </div>
