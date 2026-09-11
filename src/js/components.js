@@ -93,7 +93,7 @@ export const lowStockBadge = (product) => {
 
 export const productCard = (product) => `
   <article class="product-card">
-    <a class="product-media" href="producto.html?producto=${product.slug}" aria-label="Ver ${product.nombre}">
+    <a class="product-media" href="producto-${product.slug}.html" aria-label="Ver ${product.nombre}">
       <img src="${product.imagenPrincipal}" alt="${product.nombre}" loading="lazy" />
     </a>
     <div class="product-card-body">
@@ -105,7 +105,7 @@ export const productCard = (product) => `
       <p>${product.descripcion}</p>
       <div class="product-card-actions">
         <strong>${formatPrice(product.precio)}</strong>
-        <a class="text-link" href="producto.html?producto=${product.slug}">Ver producto ${icon('arrow')}</a>
+        <a class="text-link" href="producto-${product.slug}.html">Ver producto ${icon('arrow')}</a>
       </div>
       ${addToCartButton(product)}
     </div>

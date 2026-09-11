@@ -139,9 +139,18 @@ export const renderCatalog = async (config) => {
   setupCart(config);
 };
 
+// Cada producto tiene su propia URL prerenderizada (producto-<slug>.html), que
+// es la que ve Google. Se sigue aceptando producto.html?producto=<slug> porque
+// es la forma que tenían los enlaces antiguos y los que ya estén compartidos
+// por WhatsApp: romperlos no aportaría nada.
+const slugDeLaUrl = () => {
+  const enLaRuta = window.location.pathname.match(/producto-(.+)\.html$/);
+  if (enLaRuta) return decodeURIComponent(enLaRuta[1]);
+  return new URLSearchParams(window.location.search).get('producto');
+};
+
 export const renderProduct = async (config) => {
-  const params = new URLSearchParams(window.location.search);
-  const slug = params.get('producto');
+  const slug = slugDeLaUrl();
   const products = await getProducts();
   const product = (slug ? await getProductBySlug(slug) : null) || products[0];
 

@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "sync:argonauts": "node scripts/sync-to-argonauts.mjs",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prerender": "node scripts/prerender.mjs"
   },
   "devDependencies": {
     "jsdom": "^30.0.1",
