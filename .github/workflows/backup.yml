@@ -1,0 +1,80 @@
+# Copia de seguridad diaria de la base.
+#
+# El plan gratuito de Supabase no tiene recuperacion a un punto en el
+# tiempo: si se borra una tabla o alguien lanza un delete sin where, no
+# hay a donde volver. Esto es esa red.
+#
+# Guarda tres archivos por corrida, que juntos permiten reconstruir la
+# base desde cero:
+#   esquema.sql  — tablas, indices, funciones y politicas RLS
+#   datos.sql    — el contenido
+#   roles.sql    — los roles de base de datos
+#
+# LO QUE NO CUBRE, y conviene saberlo: las cuentas de acceso viven en el
+# esquema `auth`, que administra Supabase y no entra en este volcado. Si
+# se perdiera el proyecto entero habria que volver a crear los usuarios
+# y reconectarlos con su fila de perfil. Los datos del negocio —que es
+# lo que no se puede reescribir a mano— si estan.
+#
+# ANTES DE QUE ESTO FUNCIONE hay que cargar el secreto SUPABASE_DB_URL
+# en el repositorio: Settings → Secrets and variables → Actions → New
+# repository secret. El valor se saca de Supabase → Project Settings →
+# Database → Connection string → URI (la que incluye la contrasena).
+#
+# Y despues hay que correrlo UNA VEZ a mano desde la pestana Actions y
+# bajarse el resultado. Una copia que nunca se probo no es una copia.
+
+name: Copia de seguridad de la base
+
+on:
+  schedule:
+    # 08:30 UTC = 03:30 en Peru. Antes de que abra el negocio, para que
+    # la foto sea de un dia cerrado y no de uno a medias.
+    - cron: '30 8 * * *'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Instalar el CLI de Supabase
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Volcar esquema, datos y roles
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "Falta el secreto SUPABASE_DB_URL. Ver las instrucciones al principio de este archivo."
+            exit 1
+          fi
+          mkdir -p copia
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f copia/esquema.sql
+          supabase db dump --db-url "$SUPABASE_DB_URL" --data-only -f copia/datos.sql
+          supabase db dump --db-url "$SUPABASE_DB_URL" --role-only -f copia/roles.sql
+
+      - name: Comprobar que la copia no salio vacia
+        run: |
+          # Un volcado de 0 bytes se sube igual y parece que todo fue
+          # bien. Es la forma mas facil de creer que hay respaldo y no
+          # tenerlo, asi que se falla a proposito.
+          for f in copia/esquema.sql copia/datos.sql; do
+            tamano=$(wc -c < "$f")
+            echo "$f  ->  $tamano bytes"
+            if [ "$tamano" -lt 1000 ]; then
+              echo "ERROR: $f parece vacio. Revisar la conexion antes de confiar en esta copia."
+              exit 1
+            fi
+          done
+
+      - name: Guardar la copia
+        uses: actions/upload-artifact@v4
+        with:
+          name: copia-${{ github.run_id }}
+          path: copia/
+          # 90 dias es el maximo que guarda GitHub. Alcanza de sobra
+          # para un "borre algo sin querer"; para conservar un cierre
+          # contable de hace anos hace falta bajarlo y guardarlo aparte.
+          retention-days: 90
