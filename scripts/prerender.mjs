@@ -142,6 +142,12 @@ const paginaProducto = (plantilla, producto) => {
   const url = `${SITIO}producto-${producto.slug}.html`;
   const titulo = `${producto.nombre} | Saviare`;
   const descripcion = resumen(producto.descripcion);
+  // La vista previa usa la foto del producto, que es lo que uno espera ver al
+  // recibir el enlace por WhatsApp. Ocho de los productos la tienen en .webp y
+  // no todos los lectores de enlaces lo procesan igual de bien; si alguna vez
+  // se comparte un producto y sale sin imagen, la salida es cambiar este
+  // fallback por IMAGEN_SOCIAL para los .webp, o volver a subir esas fotos
+  // como .jpg. Se comprueba pegando el enlace en un chat propio.
   const imagen = producto.imagen_principal || IMAGEN_SOCIAL;
   const disponible = (producto.stock ?? 0) > 0;
 

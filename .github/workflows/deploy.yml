@@ -5,6 +5,16 @@ on:
     branches:
       - main
   workflow_dispatch:
+  # Desde que el sitio se prerenderiza, el HTML publicado es una foto de lo que
+  # habia en Supabase durante el build. Un producto nuevo o un precio corregido
+  # desde el panel no llegan a Google hasta la siguiente publicacion, y sin esto
+  # solo habria publicacion cuando alguien empuja codigo.
+  # 09:00 UTC son las 04:00 en Peru: se reconstruye de madrugada.
+  # Ojo: GitHub desactiva los cron de repos sin actividad durante 60 dias; si el
+  # sitio deja de actualizarse solo, mirar primero si el workflow esta pausado.
+  # Para publicar en el momento, usar "Run workflow" (workflow_dispatch).
+  schedule:
+    - cron: '0 9 * * *'
 
 permissions:
   contents: read
