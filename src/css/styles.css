@@ -1,20 +1,25 @@
 :root {
-  /* El campo es verde profundo y los productos son la unica fuente de luz.
-     El hueso es tinta, nunca fondo: en cuanto vuelve a ser campo reaparece
-     el crema de plantilla que este diseno vino a quitar. */
-  --color-bg: #153026;
-  --color-surface: #1e4133;
-  --color-text: #e9e2d2;
-  --color-muted: #a3b099;
+  /* Fondo claro, pero deliberadamente NO crema. El #f5f3e8 anterior es el
+     valor que la guia de diseno cita como delator de plantilla, y volver
+     a el seria deshacer el trabajo. Este es un gris papel con una gota de
+     verde: deja respirar las fotos sin imitar el hueso. */
+  --color-bg: #eceee7;
+  --color-surface: #ffffff;
+  --color-text: #16291f;
+  --color-muted: #5a6a5b;
 
-  /* Los dos acentos son los colores reales de la maca amarilla y la roja.
-     Salen del producto, no del gusto. */
-  --color-primary: #c79a3a;
+  /* El verde profundo pasa de campo a tinta. Sigue siendo la marca, pero
+     ahora la luz la pone el producto y no el fondo. */
+  --color-primary: #1f4a37;
+
+  /* Los acentos siguen saliendo del catalogo y no del gusto: la maca roja
+     y la amarilla. La amarilla se oscurece, porque el ocre que funcionaba
+     sobre verde no se lee sobre claro. */
   --color-accent: #8e2b23;
-  --color-secondary: #93a86a;
+  --color-secondary: #8a6a1c;
 
-  --color-error: #e0796d;
-  --color-warning: #c79a3a;
+  --color-error: #a4322a;
+  --color-warning: #8a5a12;
 
   /* El radio codifica jerarquia en lugar de ser el mismo en todo: una foto
      se comporta como un impreso y casi no lo tiene; un control es una
@@ -23,8 +28,10 @@
   --radius-control: 999px;
 
   /* La elevacion se dice con una linea, no con una sombra repetida bajo
-     cada caja. Sobre fondo oscuro la sombra no se ve; el borde si. */
-  --line: 1px solid rgba(233, 226, 210, 0.14);
+     cada caja. Se conserva del rediseno: la sombra blanda bajo todo era
+     otro de los rasgos de plantilla, y sobre claro el canto tambien
+     separa igual de bien. */
+  --line: 1px solid rgba(22, 41, 31, 0.14);
   --shadow: none;
 
   --container: min(1160px, calc(100% - 32px));
@@ -266,19 +273,20 @@ p {
 }
 
 .btn-primary {
-  /* Ocre sobre verde: el texto va oscuro porque en blanco no llegaria al
-     contraste minimo. */
+  /* Verde profundo con el texto en el tono del fondo: sobre claro, la
+     accion principal se distingue por ser la unica pieza oscura, no por
+     gritar mas fuerte que el resto. */
   color: var(--color-bg);
   background: var(--color-primary);
 }
 
 .btn-primary:hover {
-  background: #d8ab4b;
+  background: #16392a;
 }
 
 .btn-ghost {
   color: var(--color-text);
-  border-color: rgba(233, 226, 210, 0.3);
+  border-color: rgba(22, 41, 31, 0.25);
   background: transparent;
 }
 
@@ -312,7 +320,7 @@ p {
 .section.tinted {
   width: 100%;
   padding-inline: max(16px, calc((100% - 1160px) / 2));
-  background: rgba(215, 220, 183, 0.32);
+  background: rgba(31, 74, 55, 0.07);
 }
 
 .section-heading {
@@ -366,7 +374,7 @@ p {
 
 .product-media {
   display: block;
-  background: #fbfaf7;
+  background: #f4f5f1;
 }
 
 .product-media img {
@@ -1076,7 +1084,7 @@ p {
 
 .status-badge.status-pendiente {
   color: var(--color-warning);
-  background: rgba(217, 164, 65, 0.22);
+  background: rgba(138, 90, 18, 0.14);
 }
 
 .status-badge.status-aprobada {
